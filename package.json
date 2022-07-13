@@ -4,7 +4,6 @@
     "private": true,
     "description": "9lab 服务端模块",
     "versionDesc": "",
-    "sequence": 1,
     "scripts": {
         "dev": "swc src -D ./src/bin  --config-file .swcrc -d dist -w",
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",
@@ -12,7 +11,7 @@
         "gen-declaration": "tsc --emitDeclarationOnly"
     },
     "engines": {
-        "node": ">8.0.0"
+        "node": ">10.0.0"
     },
     "main": "./dist/server.js",
     "types": "./dist/global.d.ts",
@@ -23,6 +22,7 @@
         "koa": "2.13.1",
         "cron": "1.8.2",
         "redis": "4.0.3",
+        "colors": "1.4.0",
         "log4js": "1.1.1",
         "liftoff": "3.1.0",
         "koa-ejs": "4.3.0",
@@ -50,8 +50,7 @@
         "@types/koa-static": "4.0.2",
         "@types/koa-router": "7.4.4",
         "@swc/cli": "0.1.57",
-        "@swc/core": "1.2.171",
-        "colors": "1.4.0"
+        "@swc/core": "1.2.171"
     },
     "bin": {
         "xlab": "dist/bin/xlab"
