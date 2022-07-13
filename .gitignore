@@ -24,6 +24,11 @@ node_modules/
 .idea/
 .idea
 
+# Dist files #
+##############
+dist/
+@types/
+
 # Log files #
 ##############
 private/logs/

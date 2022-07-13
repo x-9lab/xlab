@@ -20,7 +20,7 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "declaration": true,
-        "declarationDir": "./dist",
+        "declarationDir": "./@types",
         "baseUrl": ".",
         "rootDir": "./src",
         "types": [
@@ -30,6 +30,7 @@
     "exclude": [
         "node_modules",
         "dist",
-        "lib"
+        "lib",
+        "@types"
     ]
 }

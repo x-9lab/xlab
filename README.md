@@ -1,14 +1,6 @@
 X-9lab 通用服务端
 =======
 
-# TODO
-
-- [ ] swc 支持 `--out-file-extension` 后转为直接输出 `.mjs` 文件
-    1. `packgae.json` 增加 `"type": "module"` 设置
-    1. `.swcrc` 中 `module.type` 改为 `es6`
-- [x] 配置文件由 `json` 改为 `ts`
-- [ ] 支持各内置模块的完整类型推导
-
 ## 开发环境配置
 1. 安装 [node](https://nodejs.org/) ,需要 10.0.0 以上版本
 
@@ -58,43 +50,10 @@ X-9lab 通用服务端
 - ``server.js``：服务器主模块
 - ``config.js``：配置处理模块
 
-## 单元测试
+## TODO
 
-- 安装 mocha
-
-    ```shell
-    npm install -g mocha
-    ```
-
-- 关掉服务端 gzip 压缩服务
-- 进入 server 目录执行
-
-    ```shell
-    mocha
-    ```
-
-## 代码覆盖率
-
-- clone node-jscoverage
-
-    ```shell
-    git clone git@github.com:tj/node-jscoverage.git
-    ```
-
-- 编译 node-jscoverage
-
-    ```shell
-    $ ./configure && make && make install
-    ```
-
-- 输出编译后的单元测试
-
-    ```shell
-    jscoverage test test_report --encoding=utf-8
-    ```
-
-- 输出覆盖率报告文件
-
-    ```shell
-    mocha test_report -R html-cov > report.html
-    ```
+- [ ] swc 支持 `--out-file-extension` 后转为直接输出 `.mjs` 文件
+    1. `packgae.json` 增加 `"type": "module"` 设置
+    1. `.swcrc` 中 `module.type` 改为 `es6`
+- [x] 配置文件由 `json` 改为 `ts`
+- [ ] 支持各内置模块的完整类型推导
