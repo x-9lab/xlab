@@ -12,6 +12,7 @@ const CONFIG: ILab.IConfig = {
     , "middleware": []
     , "strictSSL": false
     , "launchRouter": {}
+    , "root": "public"
 }
 
 

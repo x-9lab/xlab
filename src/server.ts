@@ -68,7 +68,7 @@ if (config.isProd) {
 }
 
 app.use(staticServe(
-    path.resolve(process.cwd(), "public")
+    path.resolve(process.cwd(), config.root)
     , staticServeOpts
 ));
 
