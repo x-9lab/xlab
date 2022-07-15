@@ -77,7 +77,9 @@ app.use(badRequest);
 
 if (config.enableCron) {
     // 定时任务
-    cron(__dirname + "/cron");
+    cron(
+        path.resolve(process.cwd(), "@server", "cron")
+    );
 }
 
 /**启动服务 */

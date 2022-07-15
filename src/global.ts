@@ -27,19 +27,19 @@ interface InternalComponents {
 }
 
 declare global {
+    /**全局日志对象 */
     var log: any;
 
+    /**只在 master 上输出的日志 */
     var masterLog: any;
 
     /**
     * 获取应用实例对象
-    * @return 实例对象
     */
     function getApp(): Koa;
 
     /**
-    * 获取 components 模块
-    * @description 全局方法
+    * 获取内置组件
     * @param  name 模块名
     * @return      模块对象
     */
