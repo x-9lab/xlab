@@ -21,7 +21,7 @@ const INTERNAL_MIDDLEWARE = {
 // ［最后3个中间件固定是 系统路由，静态文件服务，错误请求处理模块］
 /**加载中间件 */
 function loadMiddleware(app: koa) {
-    const config = getSysConfig<ILab.IConfig>();
+    const config = getSysConfig();
     if (isArray(config.middleware) && config.middleware.length) {
         config.middleware.forEach(item => {
             const isSrtItem = isString(item);

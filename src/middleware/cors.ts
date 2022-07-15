@@ -36,7 +36,7 @@ function getRootName(host: string) {
 
 /**系统绑定的域名对应的根域 */
 const ServerHostRootName = getRootName(
-    getSysConfig<string>("host")
+    getSysConfig("host")
 );
 
 /**判断是否允许跨域 */

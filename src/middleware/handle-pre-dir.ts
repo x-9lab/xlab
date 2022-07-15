@@ -1,7 +1,7 @@
 "use strict";
 import type Koa from "koa";
 
-var conf = getSysConfig<ILab.IConfig>();
+var conf = getSysConfig();
 
 /**
  * 路径处理匹配正则

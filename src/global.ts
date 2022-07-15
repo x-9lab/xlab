@@ -60,10 +60,19 @@ declare global {
     function requireService<T = any>(name: string): T;
 
     /**
-    * 获取系统配置
-    * @param  key 配置项
-    */
-    function getSysConfig<T = any>(key?: string): T;
+     * 获取系统配置
+     */
+    function getSysConfig(): ILab.IConfig;
+    /**
+     * 获取系统配置
+     * @param  key 配置项
+     */
+    function getSysConfig<T extends ILab.IConfig[K], K extends keyof ILab.IConfig>(key?: K): T;
+    /**
+     * 获取系统配置
+     * @param  key 配置项
+     */
+    function getSysConfig(key?: any): any;
 
     /**
     * 更新系统配置
@@ -195,6 +204,20 @@ declare global {
 
             /**不同端入口地址设置 */
             launchRouter?: Record<string, string>;
+
+            /**定时任务设置 */
+            cron?: {
+                def?: number;
+            }
+
+            /**注入参数列表 */
+            injection?: string[];
+
+            /**首页缓存时间 */
+            indexPageCacheTime?: number;
+
+            /**静态资源缓存时间 */
+            staticResourceCacheTime?: number;
         }
 
         interface ICodeItem {
@@ -266,13 +289,26 @@ function requireService<T = any>(name: string) {
 global.requireService = requireService;
 
 /**
+ * 获取全部系统配置
+ */
+function getSysConfig(): ILab.IConfig;
+/**
  * 获取系统配置
  * @param  key 配置项
  */
-function getSysConfig(key?: string) {
+function getSysConfig<T extends ILab.IConfig[K], K extends keyof ILab.IConfig>(key?: K): T;
+/**
+ * 获取系统配置
+ * @param  key 配置项
+ */
+function getSysConfig(key?: any): any {
     const conf = get();
-    return key ? conf[key] : conf;
+    if (key) {
+        return conf[key];
+    }
+    return conf;
 };
+
 global.getSysConfig = getSysConfig;
 
 /**
