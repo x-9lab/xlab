@@ -6,4 +6,4 @@ function md5(str: string) {
     return md5.digest("hex");
 }
 
-export default md5;
+export { md5 };

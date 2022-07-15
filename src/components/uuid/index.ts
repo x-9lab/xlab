@@ -1,6 +1,6 @@
 import { random } from "@x-drive/utils";
 import { networkInterfaces } from "os";
-import md5 from "../md5";
+import { md5 } from "../md5";
 
 var netInterfaces = networkInterfaces();
 const MAC = ((netInterfaces && netInterfaces.en0 || []).find(en => en.mac !== "00:00:00:00:00:00") || { "mac": "99:00:99:00:99:00" }).mac;
@@ -20,4 +20,4 @@ function uuid(one: string, tow: string) {
         , r
     ].join("-");
 }
-export default uuid;
+export { uuid };

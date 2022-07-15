@@ -1,9 +1,9 @@
 "use strict";
 
-import combo from "../components/combo"
+import { init } from "../components/combo"
 
 function handler() {
-    return combo();
+    return init();
 }
 
 export default handler;

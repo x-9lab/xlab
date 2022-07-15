@@ -1,6 +1,6 @@
 "use strict";
 
-import returnCode from "./return-code";
+import { getReturnCode } from "./return-code";
 import querystring from "querystring";
 import request from "request";
 import crypto from "crypto";
@@ -218,7 +218,7 @@ export { date }
  * @return        数据对象
  */
 function responseResult<T = any>(status: boolean, result?: T, msg?: string) {
-    var code = returnCode(status);
+    var code = getReturnCode(status);
     var dat: Partial<ILab.IStdRes<T>> = {
         "success": code.errorcode === 0
         , "code": code.errorcode

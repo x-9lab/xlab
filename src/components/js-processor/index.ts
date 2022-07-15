@@ -1,6 +1,6 @@
 import { local as Cache } from "../cache";
 import { inject } from "../injection";
-import md5 from "../md5";
+import { md5 } from "../md5";
 import path from "path";
 import fs from "fs";
 
@@ -22,7 +22,7 @@ function processorVar(html: string, req: Koa.Context) {
 }
 
 // 处理 JS 文件
-function handle(pathname: string, context: Koa.Context) {
+function jsProcessor(pathname: string, context: Koa.Context) {
     const filename = path.resolve(conf.root + pathname);
     var cacheKey: string;
     var js: string;
@@ -61,4 +61,4 @@ function init() {
 };
 export { init }
 
-export default handle;
+export { jsProcessor };

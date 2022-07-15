@@ -137,5 +137,5 @@ function check(ua: string) {
     return plat;
 }
 
-export default check;
+export { check };
 

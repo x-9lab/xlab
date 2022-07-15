@@ -1,8 +1,8 @@
 "use strict";
 import { local as Cache } from "../cache";
 import * as header from "../header";
-import mime from "../mime";
-import md5 from "../md5";
+import { MIME } from "../mime";
+import { md5 } from "../md5";
 import path from "path";
 import fs from "fs";
 import type Koa from "koa";
@@ -38,8 +38,8 @@ var logger;
 
 // 扩展名对应的 mime 头
 const extMap = {};
-Object.keys(mime).forEach(ext => {
-    extMap["." + ext] = mime[ext];
+Object.keys(MIME).forEach(ext => {
+    extMap["." + ext] = MIME[ext];
 });
 
 // 处理合并请求，合并请求以两个问号开头
@@ -138,9 +138,11 @@ async function handle(ctx: Koa.Context, next: Koa.Next) {
     ctx.body = content;
 }
 
-export default function () {
+function init() {
     conf = getSysConfig();
     logger = log.getLogger("common");
 
     return handle;
-};
+}
+
+export { init };

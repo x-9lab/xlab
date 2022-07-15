@@ -2,7 +2,7 @@
 import { isFunction } from "@x-drive/utils";
 import { local as Cache } from "../cache";
 import { inject } from "../injection";
-import md5 from "../md5";
+import { md5 } from "../md5";
 import path from "path";
 import fs from "fs";
 import type Koa from "koa";
@@ -33,7 +33,7 @@ function processorVar(html: string, req: Koa.Context) {
 //   根据配置可以设置为清除本地缓存
 //   设置缓存头
 //   根据配置设置相应头部
-function handle(pathname: string, options: HtmlProcessorOptions, context: Koa.Context) {
+function htmlProcessor(pathname: string, options: HtmlProcessorOptions, context: Koa.Context) {
 
     var filename = path.resolve(conf.root + pathname);
     // ua = req.get('user-agent'),
@@ -101,4 +101,4 @@ function init() {
 
 export { init };
 
-export default handle;
+export { htmlProcessor };

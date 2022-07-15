@@ -28,4 +28,4 @@ function get(name: string) {
     return ASSETS[name] || null;
 }
 
-export default get;
+export { get };

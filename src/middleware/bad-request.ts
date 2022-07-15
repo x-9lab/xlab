@@ -1,7 +1,7 @@
 "use strict";
 
 import { responseResult } from "../components/common";
-import assets from "../components/assets";
+import { get as assets } from "../components/assets";
 import type Koa from "koa";
 
 const s5xx = assets("5xx");

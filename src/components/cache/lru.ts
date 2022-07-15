@@ -57,7 +57,7 @@ function create(cacheName: string, conf: Record<string, ILab.JsonValue>) {
     }
     return LRU_CACHES[cacheName];
 };
-export default create;
+export { create };
 
 
 /**

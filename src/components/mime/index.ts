@@ -9,4 +9,4 @@ const MIME = {
     , "json": "application/json"
 };
 
-export default MIME;
+export { MIME };

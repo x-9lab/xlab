@@ -1,5 +1,5 @@
 
-import LRU from "./lru";
+import { create } from "./lru";
 
 // var MC = require("./mc");
 
@@ -15,4 +15,4 @@ exports.redis = function(config) {
 };*/
 
 // exports.mc = MC;
-export { LRU as local }
+export { create as local }

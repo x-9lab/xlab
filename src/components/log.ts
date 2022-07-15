@@ -113,7 +113,7 @@ LP.getLogger = function (cat) {
     return logger;
 }
 
-export default Log;
+export { Log };
 
 var meta: Record<string, any> = require(
     path.resolve(

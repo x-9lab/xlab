@@ -2,7 +2,7 @@
 import "./global";
 import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
-import cron from "./components/cron";
+import { on as cron } from "./components/cron";
 import staticServe from "koa-static";
 import router from "koa-router";
 import path from "path";

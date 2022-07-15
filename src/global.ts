@@ -1,8 +1,30 @@
-// import type Log from "./components/log";
 export type { IPlat } from "./components/platform";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
+
+/**内置组件 */
+interface InternalComponents {
+    assets: typeof import("./components/assets");
+    cache: typeof import("./components/cache");
+    cluster: typeof import("./components/cluster");
+    combo: typeof import("./components/combo");
+    header: typeof import("./components/header");
+    "html-processor": typeof import("./components/html-processor");
+    injection: typeof import("./components/injection");
+    "js-processor": typeof import("./components/js-processor");
+    md5: typeof import("./components/md5");
+    mime: typeof import("./components/mime");
+    platform: typeof import("./components/platform");
+    querystring: typeof import("./components/querystring");
+    redirect: typeof import("./components/redirect");
+    uuid: typeof import("./components/uuid");
+    version: typeof import("./components/version");
+    cron: typeof import("./components/cron");
+    log: typeof import("./components/log");
+    "return-code": typeof import("./components/return-code");
+    common: typeof import("./components/common");
+}
 
 declare global {
     var log: any;
@@ -21,7 +43,7 @@ declare global {
     * @param  name 模块名
     * @return      模块对象
     */
-    function requireMod<T = any>(name: string): T;
+    function requireMod<T extends InternalComponents[K], K extends keyof InternalComponents>(name: K): T;
 
     /**
     * 全局获取 model 的方法
@@ -199,11 +221,10 @@ function getModulePath(name: string, root?: string) {
 
 /**
  * 获取 components 模块
- * @description 全局方法
  * @param  name 模块名
  * @return      模块对象
  */
-function requireMod<T = any>(name: string) {
+function requireMod<T extends InternalComponents[K], K extends keyof InternalComponents>(name: K) {
     return <T>require(
         getModulePath(name)
     );

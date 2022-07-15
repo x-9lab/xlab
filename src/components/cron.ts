@@ -120,7 +120,7 @@ function on(dirPath: string) {
 	}
 	console.log("");
 }
-export default on;
+export { on };
 
 /**
  * 停止一个或所有的计时器

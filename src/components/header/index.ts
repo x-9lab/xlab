@@ -2,7 +2,7 @@
 import { isString, isNumber } from "@x-drive/utils";
 import { string2seconds } from "./time";
 import type Koa from "koa";
-import mime from "../mime";
+import { MIME } from "../mime";
 
 /**
  * 设置 Cache-Control
@@ -81,7 +81,7 @@ function contentType(options: string, res: Koa.Context) {
     var type: string;
 
     if (isString(options)) {
-        type = mime[options];
+        type = MIME[options];
     }
 
     if (type) {
