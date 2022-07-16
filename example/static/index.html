@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <style>
+        body,
+        html {
+            min-height: 100vh;
+        }
+
+        @keyframes gLoadingCircle {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .G-root {
+            height: 100vh;
+        }
+
+        .G-rootSpin {
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .G-rootSpin span {
+            font-size: 20px;
+            margin: 0 10px 0 0;
+            display: inline-block;
+            animation: gLoadingCircle 1s infinite linear;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="WORLD_TREE_ROOT" class="G-root">
+        <div id="WORLD_TREE_ROOT_LOADING" class="G-rootSpin">
+            <span>
+                <svg viewBox="0 0 1024 1024" focusable="false" data-icon="loading" width="1em" height="1em"
+                    fill="currentColor" aria-hidden="true">
+                    <path
+                        d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 00-94.3-139.9 437.71 437.71 0 00-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z">
+                    </path>
+                </svg>
+            </span>
+            Loading...
+        </div>
+    </div>
+</body>
+
+</html>

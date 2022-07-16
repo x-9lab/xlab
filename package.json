@@ -1,0 +1,60 @@
+{
+    "name": "@x-9lab/xlab",
+    "version": "1.0.0",
+    "private": true,
+    "description": "9lab 服务端模块",
+    "versionDesc": "",
+    "scripts": {
+        "dev": "swc src -D ./src/bin --config-file .swcrc -d dist -w",
+        "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",
+        "build": "yarn compile && yarn gen-declaration",
+        "gen-declaration": "tsc --emitDeclarationOnly",
+        "changelog": "changelog"
+    },
+    "engines": {
+        "node": ">10.0.0"
+    },
+    "main": "./dist/server.js",
+    "types": "./@types/global.d.ts",
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "koa": "2.13.1",
+        "cron": "1.8.2",
+        "redis": "4.0.3",
+        "log4js": "1.1.1",
+        "liftoff": "3.1.0",
+        "koa-ejs": "4.3.0",
+        "minimist": "1.2.5",
+        "request": "2.86.0",
+        "koa-body": "4.2.0",
+        "lru-cache": "6.0.0",
+        "koa-static": "5.0.0",
+        "koa-router": "10.0.0",
+        "http-proxy": "1.18.1",
+        "koa-compress": "5.0.1",
+        "@x-drive/utils": "1.1.19"
+    },
+    "devDependencies": {
+        "co": "4.6.0",
+        "mocha": "10.0.0",
+        "tslib": "2.3.0",
+        "colors": "1.4.0",
+        "should": "11.2.1",
+        "nodemon": "2.0.12",
+        "socket.io": "2.0.3",
+        "chokidar": "3.5.3",
+        "typescript": "4.3.4",
+        "@types/node": "16.11.40",
+        "@types/log4js": "2.3.5",
+        "@types/koa-static": "4.0.2",
+        "@types/koa-router": "7.4.4",
+        "@swc/cli": "0.1.57",
+        "@swc/core": "1.2.212",
+        "@x-drive/changelog": "1.1.6"
+    },
+    "bin": {
+        "xlab": "dist/bin/xlab"
+    }
+}

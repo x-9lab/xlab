@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+const argv = require("minimist")(process.argv.slice(2));
+const { merge } = require("@x-drive/utils");
+const Liftoff = require("liftoff");
+
+const cli = new Liftoff({
+    "name": "x-lab"
+    , "processTitle": "X Lab"
+    , "moduleName": "xlab"
+    , "configName": "xlab-config"
+    , "extensions": {
+        ".js": null
+    }
+});
+
+const hasWatch = argv.w || argv.watch;
+
+cli.launch(
+    {
+        "cwd": argv.r || argv.root
+        , "configPath": argv.f || argv.file
+    }
+    , function (env) {
+        let config = {
+            "watch": {
+                "enable": false
+            }
+        }
+        if (env.configPath) {
+            try {
+                let customConfig = require(env.configPath);
+                if (customConfig) {
+                    merge(config, customConfig);
+                }
+            } catch (e) { }
+        }
+        if (hasWatch) {
+            config.watch.enable = true;
+        }
+        if (config.watch && config.watch.enable) {
+            const watch = require("./watch");
+            watch(config.watch);
+        } else {
+            const server = require("../server");
+            server.boot();
+        }
+    }
+);

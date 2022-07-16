@@ -1,0 +1,182 @@
+X-9lab 通用服务端
+=======
+
+## 开发环境配置
+1. 安装 [node](https://nodejs.org/) ,需要 10.0.0 以上版本
+
+## 使用
+- 将 `@x-9lab/xlab` 加入到依赖中
+- `package.json` 中调用 `xlab`
+    ```json
+    {
+        "scripts": {
+            "start-dev": "xlab"
+        }
+    }
+    ```
+- 除了静态资源，服务端业务需要放在项目根目录下的 `@server` 目录中
+- 支持业务自定义以下内容 (无特殊说明的都是存放在 @server 目录中)
+    - 配置项，存放于 `@config` 目录
+        - 支持不同环境配置文件
+            - 无中间词缀的 config 文件为生产环境配置文件
+            - 中间词缀为 `dev` 的 config 文件为开发环境配置文件
+            - 中间词缀为`sand` 的 config 文件为沙箱环境配置文件
+            - 中间词缀为`lo` 的 config 文件为本地环境配置文件，该文件不应被提交到仓库
+        - 配置文件按照中间词缀，合并优先级为 `lo > dev = sand > 无`
+            - 开发环境与沙箱环境同时只会根据当前环境取其中一个，因此优先级一样
+    - 服务接口，存放于 `business` 目录
+        - 接口地址
+            - 默认服务接口均以 `api` 开始
+            - 按照目录结构生成 api
+                - 文件名是 `index` 的会被从 api 上先强行去掉
+                - 默认都是 `get` 请求
+        - 支持以下形式定义接口
+            - 模块返回的是数组，则使用文件名做为方法名，并在 api 上去掉文件名
+            - 非数组则文件当作正常的 api 地址
+            - 模块返回为函数的则直接绑定为接口处理函数
+            - 返回是对象则取对应的字段
+                - `method` 接口类型，如 `get` 或 `post`
+                - `middleware` 接口中间件
+                - `handler` 接口处理函数
+    - 自定义逻辑，存放于 `custom` 目录，模块需要导出一个函数作为执行入口
+    - 中间件，存放于 `middleware` 目录
+    - 定时任务，存放于 `cron` 目录
+    - 静态资源，默认存放在项目根目录下的 `public` 目录中
+### 全局对象与函数
+
+#### 全局对象
+- `log` 全局日志对象
+- `masterLog` 只在 master 上输出的日志对象
+
+#### 全局函数
+- `getApp` 获取应用实例对象
+    ```ts
+    /**
+    * 获取应用实例对象
+    */
+    function getApp(): Koa;
+    ```
+- `requireMod` 获取内置组件
+    ```ts
+    /**
+    * 获取内置组件
+    * @param  name 模块名
+    * @return      模块对象
+    */
+    function requireMod<T extends InternalComponents[K], K extends keyof InternalComponents>(name: K): T;
+    ```
+- `getSysConfig` 获取系统配置
+    - 获取全部配置
+    ```js
+    const config = getSysConfig();
+    ```
+    - 获取指定配置
+    ```js
+    const allowCache = getSysConfig("allowCache");
+    ```
+- `setSysConfig` 更新系统配置
+    ```ts
+    /**
+    * 更新系统配置
+    * @param  conf 配置项
+    */
+    function setSysConfig(conf: XLab.IConfig): void;
+    ```
+- `requireModel` 全局获取 model 的方法
+- `requireService` 全局获取 service 的方法
+
+#### Namespace `XLab`
+`XLab` 提供了一些标准化的定义及系统配置
+- `IStdRes` 标准返回数据
+- `IConfig` 系统配置对象
+- `ICodeItem` 错误信息对象
+- `ICodeDetail` 错误定义
+
+### 配置项
+|名称|类型|默认值|说明|
+|-|-|-|-|
+|name|`string`| package.json 中的 name 字段 |服务(应用)名称|
+|version|`string`|package.json 中的 version 字段|版本|
+|env|`string`|development|环境标识|
+|host|`string`| |业务绑定的域名|
+|304|`boolean`| true |是否开启 304 协商缓存|
+|workers|`number`|0|Worker 数量|
+|biServer|`string`||业务服务器地址|
+|protocol|`string`|http|业务服务器协议|
+|debug|`boolean`|false|是否开启 debug 模式|
+|staticMaxage|`number`|1800000|静态文件缓存时间|
+|staticHtmlFileMaxage|`number`|0|静态 html 文件缓存时间|
+|enableComboCache|`boolean`|true|是否开启 Combo 缓存|
+|enableCron|`boolean`|false|是否开启定时任务|
+|middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表 |
+|custom|`string[]`||自定模块配置|
+|strictSSL|`boolean`||是否启用严格 ssl|
+|apis|`Record<string, string>`|{}|页端注入的 api 设置|
+|hasLo|`boolean`||本地是否存在本地开发配置文件|
+|passExtApis|`boolean`||不处理业务 api|
+|allowCache|`boolean`||是否允许页端缓存|
+|root|`string`|public|静态文件根目录|
+|port|`number`|5000|监听端口|
+|isMaster|`boolean`||是否是主进程|
+|clearLocalStorage|`boolean`||是否每次都强制清除 LocalStorage|
+|pathReplaceRegExp|`string`||处理代理过来多余的地址层级路径替换判断正则|
+|routeMobile|`string`||移动端入口文件地址(旧版逻辑)|
+|launchRouter|`Record<string, string>`||不同端入口地址设置|
+|cron|`{def?: number;}`|{"def": 60}|定时任务设置|
+|injection|`string[]`|[]|注入参数列表|
+|indexPageCacheTime|`number`||首页缓存时间|
+|staticResourceCacheTime|`number`||静态资源缓存时间|
+
+## 文件结构
+
+```
+├── README.md
+├── business
+│   └── @services
+│   └── @models
+│   │  └── forumUser.js
+│   └── ...
+├── components
+│   ├── cache
+│   ├── common.js
+│   └── ...
+├── @config
+│   ├── config.dev.ts
+│   └── config.ts
+├── middleware
+├── cron
+├── public
+├── test
+├── route
+├── private
+│   └── log
+├── package.json
+├── config.js
+├── router.js
+└── server.js
+```
+
+### 说明
+- ``business目录``：前端业务
+- ``@services目录``：业务services
+- ``@models目录``：存放model
+- ``components目录``： 存放当前项目组件
+- ``@config``：存放环境配置，不同环境在名称与文件后缀中间使用不同代号区分
+- ``middleware目录``：存放请求特殊处理模块，一般作为中间件
+- ``public目录``：存放前端资源文件
+- ``cron目录``：存放定时任务文件
+- ``test目录``：存放单元测试
+- ``route目录``：存放不同平台的路由配置
+- ``private目录``：存放业务 log ，或其他服务端相关的内容
+- ``package.json``：nodejs后端所需要的依赖描述文件，即npm的 [package.json](https://www.npmjs.org/doc/files/package.json.html) 文件
+- ``router.js``：路由模块
+- ``server.js``：服务器主模块
+- ``config.js``：配置处理模块
+
+## TODO
+
+- [ ] swc 支持 `--out-file-extension` 后转为直接输出 `.mjs` 文件
+    1. `packgae.json` 增加 `"type": "module"` 设置
+    1. `.swcrc` 中 `module.type` 改为 `es6`
+- [x] 配置文件由 `json` 改为 `ts`
+- [x] 支持各内置模块的完整类型推导
