@@ -1,5 +1,6 @@
 "use strict";
 
+/**@type {XLab.IConfig} */
 const CONFIG = {
     "304": true,
     "middleware": [
@@ -17,9 +18,8 @@ const CONFIG = {
     "apis": {},
     "indexFileMaxage": 180,
     "custom": [
-        "load-contracts",
-        "return-code"
     ],
-    "launchRouter": {}
+    "launchRouter": {},
+    "root": "static"
 };
 module.exports = CONFIG;

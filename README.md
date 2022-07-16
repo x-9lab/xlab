@@ -80,10 +80,17 @@ X-9lab 通用服务端
     * 更新系统配置
     * @param  conf 配置项
     */
-    function setSysConfig(conf: ILab.IConfig): void;
+    function setSysConfig(conf: XLab.IConfig): void;
     ```
 - `requireModel` 全局获取 model 的方法
 - `requireService` 全局获取 service 的方法
+
+#### Namespace `XLab`
+`XLab` 提供了一些标准化的定义及系统配置
+- `IStdRes` 标准返回数据
+- `IConfig` 系统配置对象
+- `ICodeItem` 错误信息对象
+- `ICodeDetail` 错误定义
 
 ### 配置项
 |名称|类型|默认值|说明|
@@ -104,7 +111,7 @@ X-9lab 通用服务端
 |middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表 |
 |custom|`string[]`||自定模块配置|
 |strictSSL|`boolean`||是否启用严格 ssl|
-|apis|`Record<string, string>`||页端注入的 api 设置|
+|apis|`Record<string, string>`|{}|页端注入的 api 设置|
 |hasLo|`boolean`||本地是否存在本地开发配置文件|
 |passExtApis|`boolean`||不处理业务 api|
 |allowCache|`boolean`||是否允许页端缓存|
