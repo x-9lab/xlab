@@ -75,7 +75,7 @@ export { commonLog as log }
 /**
  * 启动时用于输出启动信息的方法
  */
-function theLog(...rest: ILab.JsonValue[]) {
+function theLog(...rest: XLab.JsonValue[]) {
     if (IS_MASTER) {
         logger.info.apply(logger, rest);
     }
@@ -90,7 +90,7 @@ customConfigProcessor(conf, env, envAddConfPath);
 /**
  * 默认配置
  */
-const CONFIG: ILab.IConfig = {
+const CONFIG: XLab.IConfig = {
     "name": meta.name
     , "version": meta.version
     , "env": env
@@ -136,7 +136,7 @@ function get() {
 export { get };
 
 /**更新配置 */
-function update(conf: ILab.IConfig) {
+function update(conf: XLab.IConfig) {
     if (isObject(conf)) {
         extend(CONFIG, conf);
     }

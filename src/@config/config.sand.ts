@@ -1,3 +1,3 @@
-const CONFIG: ILab.IConfig = {};
+const CONFIG: XLab.IConfig = {};
 
 export default CONFIG;

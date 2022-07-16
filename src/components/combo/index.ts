@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 import type Koa from "koa";
 
-var conf: ILab.IConfig;
+var conf: XLab.IConfig;
 
 // combo 文件缓存时间单位
 // 默认一周

@@ -59,7 +59,7 @@ buildCodeMap();
  * @param  msg  返回信息<可选>
  * @return      状态对象
  */
-function getReturnCode(code: number, msg?: string): ILab.ICodeItem
+function getReturnCode(code: number, msg?: string): XLab.ICodeItem
 
 /**
  * 根据状态名称获取错误定义信息
@@ -67,7 +67,7 @@ function getReturnCode(code: number, msg?: string): ILab.ICodeItem
  * @param  msg  返回信息<可选>
  * @return      状态对象
  */
-function getReturnCode(code: keyof typeof CODE_DETAIL, msg?: string): ILab.ICodeItem
+function getReturnCode(code: keyof typeof CODE_DETAIL, msg?: string): XLab.ICodeItem
 
 /**
  * 根据状态名称获取错误定义信息
@@ -75,7 +75,7 @@ function getReturnCode(code: keyof typeof CODE_DETAIL, msg?: string): ILab.ICode
  * @param  msg  返回信息<可选>
  * @return      状态对象
  */
-function getReturnCode(code: string, msg?: string): ILab.ICodeItem
+function getReturnCode(code: string, msg?: string): XLab.ICodeItem
 
 /**
  * 根据状态获取错误定义信息
@@ -83,7 +83,7 @@ function getReturnCode(code: string, msg?: string): ILab.ICodeItem
  * @param  msg  返回信息<可选>
  * @return      状态对象
  */
-function getReturnCode(code: boolean, msg?: string): ILab.ICodeItem
+function getReturnCode(code: boolean, msg?: string): XLab.ICodeItem
 
 /**
  * 根据状态码或状态名称获取错误定义信息
@@ -91,12 +91,12 @@ function getReturnCode(code: boolean, msg?: string): ILab.ICodeItem
  * @param  msg  返回信息<可选>
  * @return      状态对象
  */
-function getReturnCode(code: any, msg?: string): ILab.ICodeItem {
+function getReturnCode(code: any, msg?: string): XLab.ICodeItem {
 
     if (isBoolean(code)) {
         code = code ? 0 : -1;
     }
-    var re: ILab.ICodeItem;
+    var re: XLab.ICodeItem;
 
     switch (true) {
         case isString(code):
@@ -134,7 +134,7 @@ export { getCodeDetail }
  * 设置新的错误代码
  * @param data 新的错误代码数据
  */
-function set(data: ILab.ICodeDetail) {
+function set(data: XLab.ICodeDetail) {
     if (data && typeof (data) === "object") {
         Object.keys(data).forEach(function (key) {
             CODE_DETAIL[key] = data[key];

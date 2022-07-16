@@ -55,7 +55,7 @@ function masterMessageHandler(msg: IMsgItem) {
 /**尝试以 cluster 模式启动服务 */
 function start() {
     var server: Server;
-    var serverListenConf: Pick<ILab.IConfig, "port" | "host"> = {
+    var serverListenConf: Pick<XLab.IConfig, "port" | "host"> = {
         "port": config.port
     }
     if (config.ip) {

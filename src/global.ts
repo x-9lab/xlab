@@ -62,12 +62,12 @@ declare global {
     /**
      * 获取系统配置
      */
-    function getSysConfig(): ILab.IConfig;
+    function getSysConfig(): XLab.IConfig;
     /**
      * 获取系统配置
      * @param  key 配置项
      */
-    function getSysConfig<T extends ILab.IConfig[K], K extends keyof ILab.IConfig>(key?: K): T;
+    function getSysConfig<T extends XLab.IConfig[K], K extends keyof XLab.IConfig>(key?: K): T;
     /**
      * 获取系统配置
      * @param  key 配置项
@@ -78,9 +78,9 @@ declare global {
     * 更新系统配置
     * @param  conf 配置项
     */
-    function setSysConfig(conf: ILab.IConfig): void;
+    function setSysConfig(conf: XLab.IConfig): void;
 
-    namespace ILab {
+    namespace XLab {
 
         /**JSON 基本数据类型 */
         type JsonValue = boolean | string | number | null | undefined | JsonArray | JsonObject;
@@ -291,12 +291,12 @@ global.requireService = requireService;
 /**
  * 获取全部系统配置
  */
-function getSysConfig(): ILab.IConfig;
+function getSysConfig(): XLab.IConfig;
 /**
  * 获取系统配置
  * @param  key 配置项
  */
-function getSysConfig<T extends ILab.IConfig[K], K extends keyof ILab.IConfig>(key?: K): T;
+function getSysConfig<T extends XLab.IConfig[K], K extends keyof XLab.IConfig>(key?: K): T;
 /**
  * 获取系统配置
  * @param  key 配置项
@@ -315,7 +315,7 @@ global.getSysConfig = getSysConfig;
  * 更新系统配置
  * @param  conf 配置项
  */
-function setSysConfig(conf: ILab.IConfig) {
+function setSysConfig(conf: XLab.IConfig) {
     update(conf);
 };
 global.setSysConfig = setSysConfig;

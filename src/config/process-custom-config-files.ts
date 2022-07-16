@@ -3,7 +3,7 @@ import { merge } from "@x-drive/utils"
 import path from "path";
 import fs from "fs";
 
-function customConfigProcessor(conf: ILab.IConfig, env: string, envAddConfPath: string) {
+function customConfigProcessor(conf: XLab.IConfig, env: string, envAddConfPath: string) {
     // 业务自定义服务端业务文件夹
     const customDir = path.resolve(
         process.cwd()
@@ -38,7 +38,7 @@ function customConfigProcessor(conf: ILab.IConfig, env: string, envAddConfPath: 
                 path.join("..", envAddConfPath)
             )
         );
-        let extConf: ILab.IConfig = {};
+        let extConf: XLab.IConfig = {};
         let customDevConf = {};
         if (hasCustom) {
             /**对应环境配置文件地址 */

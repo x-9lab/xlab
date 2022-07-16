@@ -6,7 +6,7 @@ import fs from "fs";
 
 import type Koa from "koa";
 
-var conf: ILab.IConfig;
+var conf: XLab.IConfig;
 var logger;
 
 var js_cache = Cache(

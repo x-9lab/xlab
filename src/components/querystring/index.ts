@@ -10,7 +10,7 @@ import qs from "querystring";
  * query2string({"pf":"145","ss":"320x240"},{"fr":"android"},["fr"]);
  * ```
  */
-function query2string(...args: Array<ILab.JsonObject | string[]>) {
+function query2string(...args: Array<XLab.JsonObject | string[]>) {
     var withouts: string[];
     const lastIndex = args.length - 1;
 

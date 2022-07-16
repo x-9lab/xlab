@@ -12,7 +12,7 @@ interface HtmlProcessorOptions {
     route?: RouteOption;
 }
 
-var conf: ILab.IConfig;
+var conf: XLab.IConfig;
 var logger;
 
 const html_cache = Cache(

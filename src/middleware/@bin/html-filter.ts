@@ -1,7 +1,7 @@
 "use strict";
 import { random } from "@x-drive/utils";
 
-var conf: ILab.IConfig;
+var conf: XLab.IConfig;
 const VER_RE = /\d+\.\d+\.\d+/;
 
 

@@ -1,4 +1,4 @@
-const CONFIG: ILab.IConfig = {
+const CONFIG: XLab.IConfig = {
     "host": ""
     , "304": true
     , "workers": 0

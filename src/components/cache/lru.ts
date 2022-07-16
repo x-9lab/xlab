@@ -18,7 +18,7 @@ var LRU_CACHES: Record<string, typeof LRU> = {};
  * @param  conf      缓存配置
  * @return           缓存实例
  */
-function init(cacheName: string, conf: Record<string, ILab.JsonValue>) {
+function init(cacheName: string, conf: Record<string, XLab.JsonValue>) {
     if (NOW_NUM >= MAX_NUM) {
         var cache: typeof LRU;
         var deadName: string;
@@ -47,7 +47,7 @@ function init(cacheName: string, conf: Record<string, ILab.JsonValue>) {
  * @param  conf      缓存配置，仅在生成的时候有效
  * @return           缓存实例
  */
-function create(cacheName: string, conf: Record<string, ILab.JsonValue>) {
+function create(cacheName: string, conf: Record<string, XLab.JsonValue>) {
     cacheName = cacheName || "DEFAULT";
     if (!LRU_CACHES[cacheName]) {
         if (LRU_CACHES[cacheName] === null) {

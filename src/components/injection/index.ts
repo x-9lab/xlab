@@ -64,7 +64,7 @@ export { inject }
  * @param  val 数据
  * @return     存储的数据
  */
-function add(key: string, val: ILab.JsonValue) {
+function add(key: string, val: XLab.JsonValue) {
     INJECTIONS[key] = val;
     injectVars.push(key);
     return INJECTIONS[key];
@@ -77,7 +77,7 @@ export { add }
  * @param  val 数据
  * @return     存储的数据
  */
-function modify(key: string, val: ILab.JsonValue) {
+function modify(key: string, val: XLab.JsonValue) {
     var re = INJECTIONS.hasOwnProperty(key)
     if (re) {
         INJECTIONS[key] = val;

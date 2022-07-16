@@ -103,14 +103,14 @@ const labelReplaceExp = /\{(\w+)\}/g;
  * @param  data 替换数据
  * @return      替换后端字符串
  */
-function labelReplace(tpl: string, data: Record<string, ILab.JsonValue>): string
+function labelReplace(tpl: string, data: Record<string, XLab.JsonValue>): string
 /**
  * 批量替换字符串中带花括号标签为指定数据
  * @param  tpl  待处理的字符串
  * @param  data 替换数据
  * @return      替换后端字符串
  */
-function labelReplace(tpl: string, data: ILab.JsonValue): string
+function labelReplace(tpl: string, data: XLab.JsonValue): string
 /**
  * 批量替换字符串中带花括号标签为指定数据
  * @param  tpl  待处理的字符串
@@ -219,13 +219,13 @@ export { date }
  */
 function responseResult<T = any>(status: boolean, result?: T, msg?: string) {
     var code = getReturnCode(status);
-    var dat: Partial<ILab.IStdRes<T>> = {
+    var dat: Partial<XLab.IStdRes<T>> = {
         "success": code.errorcode === 0
         , "code": code.errorcode
         , "msg": msg || code.msg
     };
     dat.result = result || null;
-    return <ILab.IStdRes>dat;
+    return <XLab.IStdRes>dat;
 }
 export { responseResult }
 
@@ -233,7 +233,7 @@ export { responseResult }
  * 根据传入的参数生成一个 MD5 值
  */
 function getMD5(...args: any[]) {
-    const conditions: ILab.JsonObject = {};
+    const conditions: XLab.JsonObject = {};
     args.forEach(function (item, index) {
         conditions[index] = item;
     });
@@ -248,7 +248,7 @@ export { getMD5 }
  * @param  obj 待转的对象
  * @return     转化后的数组
  */
-function object2Array(obj: ILab.JsonObject) {
+function object2Array(obj: XLab.JsonObject) {
     var arr = [];
     Object.keys(obj).forEach(function (key) {
         arr.push(
@@ -310,7 +310,7 @@ export { requestWapper }
  * @param  data 原始数据字符串
  * @return      格式化后的数据
  */
-function formatJson<T = ILab.JsonObject>(data: string) {
+function formatJson<T = XLab.JsonObject>(data: string) {
     var re: T;
     try {
         re = JSON.parse(data);
@@ -331,7 +331,7 @@ export { formatJson }
  * @param  jsonp jsonp 回调函数名称
  * @return       当是 jsonp 格式时返回 String, 不是时返回原始数据
  */
-function toJsonp(data: ILab.JsonObject, jsonp: string) {
+function toJsonp(data: XLab.JsonObject, jsonp: string) {
     return jsonp ? jsonp + "(" + JSON.stringify(data) + ")" : data;
 }
 export { toJsonp }
