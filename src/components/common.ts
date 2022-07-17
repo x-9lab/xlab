@@ -1,14 +1,21 @@
 "use strict";
 
+import { isArray, random } from "@x-drive/utils";
 import { getReturnCode } from "./return-code";
 import querystring from "querystring";
-import request from "request";
+// import request from "request";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 
 var logger;
 
+function checkLogger() {
+    if (!logger) {
+        logger = log.getLogger("common");
+    }
+    return logger;
+}
 
 /**
  * ascii字符串转为base64字符串
@@ -144,28 +151,28 @@ const format_exp = /[YymndjNwaAghGHis]/g;
 /**
  * 格式化时间
  * @param  format 日期格式
- * @param  date   时间戳
+ * @param  ts     时间戳
  * @return        格式化后的时间
  */
 function date(format: string, ts: number): string
 /**
  * 格式化时间
  * @param  format 日期格式
- * @param  date   日期字符串
+ * @param  ts     日期字符串
  * @return        格式化后的时间
  */
 function date(format: string, ts: string): string
 /**
  * 格式化时间
  * @param  format 日期格式
- * @param  date   日期对象
+ * @param  ts     日期对象
  * @return        格式化后的时间
  */
 function date(format: string, ts: Date): string
 /**
  * 格式化时间
  * @param  format 日期格式
- * @param  date   日期数据(时间戳, 字符串)
+ * @param  ts     日期数据(时间戳, 字符串)
  * @return        格式化后的时间
  */
 function date(format: any, ts: any): string {
@@ -225,7 +232,7 @@ function responseResult<T = any>(status: boolean, result?: T, msg?: string) {
         , "msg": msg || code.msg
     };
     dat.result = result || null;
-    return <XLab.IStdRes>dat;
+    return dat as XLab.IStdRes;
 }
 export { responseResult }
 
@@ -289,17 +296,13 @@ export { promiseWapper }
 
 /**
  * 封装一个 promise 形式的 request 方法
+ * @deprecated 请直接使用 component 中的 request 模块
  */
 function requestWapper<T = any>(...args: any[]) {
-    return new Promise(function (resolve, reject) {
-        args.push(function (err: Error, res: any, body: T) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(body);
-            }
-        });
-        request.apply(request, args);
+    return new Promise(function (_, reject) {
+        reject(
+            new Error("请直接使用 component 中的 request 模块")
+        );
     });
 }
 export { requestWapper }
@@ -315,9 +318,7 @@ function formatJson<T = XLab.JsonObject>(data: string) {
     try {
         re = JSON.parse(data);
     } catch (err) {
-        if (!logger) {
-            log.getLogger("common");
-        }
+        checkLogger();
         logger.error("Pares create menu return data fail.", data);
         return null;
     }
@@ -398,3 +399,28 @@ function getRealDefaultMod(mod: any) {
     return mod;
 }
 export { getRealDefaultMod };
+
+/**
+* 休眠随机时间
+* @param time 随机时间范围
+* @property min 最小时间(ms)
+* @property max 最大时间(ms)
+*/
+async function sleep(time: [min: number, max: number]): Promise<boolean>
+/**
+ * 休眠
+ * @param time 休眠时间(ms)
+ */
+async function sleep(time: number): Promise<boolean>
+async function sleep(time: unknown) {
+    const delay: number = isArray(time) ? random(time[1], time[0]) : time as number;
+    checkLogger();
+    logger.log(`Sleep ${delay} ms`);
+    return await new Promise(res => {
+        setTimeout(() => {
+            res(true);
+        }, delay);
+    });
+}
+
+export { sleep };
