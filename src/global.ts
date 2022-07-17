@@ -167,7 +167,13 @@ declare global {
             strictSSL?: boolean;
 
             /**页端注入的 api 设置 */
-            apis?: Record<string, string>
+            apis?: Record<string, string>;
+
+            /**内部服务域名 */
+            internalServers?: Record<string, string>;
+
+            /**内部服务地址 */
+            internalApis?: Record<string, string>;
 
             /**服务 ip 地址 */
             ip?: string;

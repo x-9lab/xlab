@@ -1,5 +1,6 @@
 import { checkFileStat, getRealDefaultMod } from "../components/common";
 import conf from "../@config/config";
+import { resolve } from "path";
 
 function defConfigProcessor(argv: Record<string, string>) {
     if (argv.IP) {
@@ -7,17 +8,26 @@ function defConfigProcessor(argv: Record<string, string>) {
         (conf as XLab.IConfig).ip = argv.IP;
     }
 
+    const apiPath = require(
+        resolve(
+            ".."
+            , "@config"
+            , "@apis"
+            , "index.js"
+        )
+    );
+
     // api 配置文件处理
-    var hasCustomApiConf = checkFileStat("../@config/@apis/index.js", true);
-    if (hasCustomApiConf) {
+    var hasDefApiConf = checkFileStat(apiPath, true);
+    if (hasDefApiConf) {
         (conf as XLab.IConfig).apis = Object.assign(
             (conf as XLab.IConfig).apis || {}
             , getRealDefaultMod(
-                require("../conf/@conf/index.js")
+                require(apiPath)
             )
         );
     }
-    hasCustomApiConf = null;
+    hasDefApiConf = null;
 
     return conf as XLab.IConfig;
 }
