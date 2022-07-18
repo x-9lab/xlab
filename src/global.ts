@@ -24,6 +24,7 @@ interface InternalComponents {
     log: typeof import("./components/log");
     "return-code": typeof import("./components/return-code");
     common: typeof import("./components/common");
+    request: typeof import("./components/request");
 }
 
 declare global {
