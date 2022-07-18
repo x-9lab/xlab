@@ -16,34 +16,38 @@ const cli = new Liftoff({
 
 const hasWatch = argv.w || argv.watch;
 
-cli.launch(
+function onLaunch(env) {
+    let config = {
+        "watch": {
+            "enable": false
+        }
+    }
+    if (env.configPath) {
+        try {
+            let customConfig = require(env.configPath);
+            if (customConfig) {
+                merge(config, customConfig);
+            }
+        } catch (e) { }
+    }
+    if (hasWatch) {
+        config.watch.enable = true;
+    }
+    if (config.watch && config.watch.enable) {
+        const watch = require("./watch");
+        watch(config.watch);
+    } else {
+        const server = require("../server");
+        server.boot();
+    }
+}
+
+cli.prepare(
     {
         "cwd": argv.r || argv.root
         , "configPath": argv.f || argv.file
     }
     , function (env) {
-        let config = {
-            "watch": {
-                "enable": false
-            }
-        }
-        if (env.configPath) {
-            try {
-                let customConfig = require(env.configPath);
-                if (customConfig) {
-                    merge(config, customConfig);
-                }
-            } catch (e) { }
-        }
-        if (hasWatch) {
-            config.watch.enable = true;
-        }
-        if (config.watch && config.watch.enable) {
-            const watch = require("./watch");
-            watch(config.watch);
-        } else {
-            const server = require("../server");
-            server.boot();
-        }
+        cli.execute(env, onLaunch);
     }
 );
