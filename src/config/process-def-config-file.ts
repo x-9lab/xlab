@@ -8,13 +8,11 @@ function defConfigProcessor(argv: Record<string, string>) {
         (conf as XLab.IConfig).ip = argv.IP;
     }
 
-    const apiPath = require(
-        resolve(
-            ".."
-            , "@config"
-            , "@apis"
-            , "index.js"
-        )
+    const apiPath = resolve(
+        ".."
+        , "@config"
+        , "@apis"
+        , "index.js"
     );
 
     // api 配置文件处理
