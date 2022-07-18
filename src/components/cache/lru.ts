@@ -1,3 +1,4 @@
+import { isObject, isString } from "@x-drive/utils";
 import LRU from "lru-cache";
 
 const maxCache = 100;
@@ -59,6 +60,25 @@ function create(cacheName: string, conf: Record<string, XLab.JsonValue>) {
 };
 export { create };
 
+/**
+ * 获取一个缓存实例
+ * @param name 缓存名称
+ * @param conf 缓存配置
+ */
+function get(name: string, conf?: Record<string, XLab.JsonValue>) {
+    if (!isString(name)) {
+        throw new Error("必须指定缓存名称");
+    }
+    if (LRU_CACHES[name]) {
+        return LRU_CACHES[name];
+    }
+
+    if (isObject(conf)) {
+        return create(name, conf);
+    }
+    throw new Error(`找不到缓存 ${name}, 你可以先创建再调用本方法获取,或传入配置对象自动生成`);
+}
+export { get }
 
 /**
  * 获取当前缓存实例数量

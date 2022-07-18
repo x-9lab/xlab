@@ -50,14 +50,14 @@ declare global {
     * @param  name model 名称
     * @return      model 模块
     */
-    function requireModel<T = any>(name: string): T;
+    function requireModel<T extends XLab.IModels[K], K extends keyof XLab.IModels>(name: K): T;
 
     /**
     * 全局获取 service 的方法
     * @param  name service 名称
     * @return      service 模块
     */
-    function requireService<T = any>(name: string): T;
+    function requireService<T extends XLab.IServices[K], K extends keyof XLab.IServices>(name: K): T;
 
     /**
      * 获取系统配置
@@ -100,6 +100,16 @@ declare global {
         /**包含复合值的对象 */
         interface CompositeObject {
             [key: string]: CompositeValue;
+        }
+
+        /**业务服务 */
+        interface IServices {
+
+        }
+
+        /**业务数据模型 */
+        interface IModels {
+
         }
 
         /**标准返回数据 */
@@ -226,6 +236,7 @@ declare global {
             staticResourceCacheTime?: number;
         }
 
+        /**业务错误数据对象 */
         interface ICodeItem {
             /**错误码 */
             errorcode: number;
@@ -234,6 +245,7 @@ declare global {
             msg: string;
         }
 
+        /**业务错误定义 */
         type ICodeDetail = Record<string, ICodeItem>;
     }
 }

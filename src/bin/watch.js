@@ -1,6 +1,6 @@
 const { date } = require("@x-drive/utils");
 const crossSpawn = require("cross-spawn");
-colors = require("colors/safe");
+const colors = require("colors/safe");
 const path = require("path");
 const fs = require("fs");
 

@@ -16,7 +16,8 @@
     "main": "./dist/server.js",
     "types": "./@types/global.d.ts",
     "files": [
-        "dist"
+        "dist",
+        "@types"
     ],
     "dependencies": {
         "koa": "2.13.4",
@@ -53,5 +54,9 @@
     },
     "bin": {
         "xlab": "dist/bin/xlab"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/x-9lab/xlab.git"
     }
 }
