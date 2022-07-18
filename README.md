@@ -14,6 +14,19 @@ X-9lab 通用服务端
         }
     }
     ```
+- `watch` 模式
+    `xlab` 支持自动重启业务，开发中使用该功能可以减少大量手动重启业务的操作。
+    启用方式：
+    - 启动命令使用 `w` 参数
+    - 在配置文件中开启
+        ```js
+        const { NODE_ENV } = process.env;
+        module.exports = {
+            "watch": {
+                "enable": NODE_ENV === "development"
+            }
+        }
+        ```
 - 除了静态资源，服务端业务需要放在项目根目录下的 `@server` 目录中
 - 支持业务自定义以下内容 (无特殊说明的都是存放在 @server 目录中)
     - 配置项，存放于 `@config` 目录
