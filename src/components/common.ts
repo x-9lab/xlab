@@ -1,6 +1,7 @@
 "use strict";
 
 import { getReturnCode } from "./return-code";
+import { isObject } from "@x-drive/utils";
 import querystring from "querystring";
 import request from "request";
 import crypto from "crypto";
@@ -212,20 +213,47 @@ export { date }
 
 /**
  * 生成操作结果数据对象
+ * @param  status 返回码
+ * @param  result 返回的数据，数据格式根据具体模块而定
+ * @param  msg    返回的提示性信息
+ * @return        数据对象
+ */
+function responseResult<T = any>(status: number, result?: T, msg?: string): XLab.IStdRes
+
+/**
+ * 生成操作结果数据对象
+ * @param  status 操作结果
+ * @param  result 返回的数据，数据格式根据具体模块而定
+ * @param  msg    返回的提示性信息
+ * @return        数据对象
+ */
+function responseResult<T = any>(status: boolean, result?: T, msg?: string): XLab.IStdRes
+
+/**
+ * 生成操作结果数据对象
+ * @param  status 返回结果数据
+ * @param  result 返回的数据，数据格式根据具体模块而定
+ * @param  msg    返回的提示性信息
+ * @return        数据对象
+ */
+function responseResult<T = any>(status: XLab.ICodeItem, result?: T, msg?: string): XLab.IStdRes
+
+/**
+ * 生成操作结果数据对象
  * @param  status 布尔，操作结果
  * @param  result 返回的数据，数据格式根据具体模块而定
  * @param  msg    返回的提示性信息
  * @return        数据对象
  */
-function responseResult<T = any>(status: boolean, result?: T, msg?: string) {
-    var code = getReturnCode(status);
+function responseResult<T = any>(status: any, result?: T, msg?: string): XLab.IStdRes {
+    var code: XLab.ICodeItem = isObject(status) ? status : getReturnCode(status);
     var dat: Partial<XLab.IStdRes<T>> = {
         "success": code.errorcode === 0
         , "code": code.errorcode
         , "msg": msg || code.msg
     };
     dat.result = result || null;
-    return <XLab.IStdRes>dat;
+    return dat as XLab.IStdRes;
 }
 export { responseResult }
 
