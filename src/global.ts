@@ -8,7 +8,6 @@ interface InternalComponents {
     assets: typeof import("./components/assets");
     cache: typeof import("./components/cache");
     cluster: typeof import("./components/cluster");
-    combo: typeof import("./components/combo");
     header: typeof import("./components/header");
     "html-processor": typeof import("./components/html-processor");
     injection: typeof import("./components/injection");
