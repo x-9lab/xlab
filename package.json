@@ -1,7 +1,6 @@
 {
     "name": "@x-9lab/xlab",
     "version": "1.0.0",
-    "private": true,
     "description": "9lab 服务端模块",
     "versionDesc": "",
     "scripts": {
@@ -17,7 +16,8 @@
     "main": "./dist/server.js",
     "types": "./@types/global.d.ts",
     "files": [
-        "dist"
+        "dist",
+        "@types"
     ],
     "dependencies": {
         "koa": "2.13.1",
@@ -56,5 +56,9 @@
     },
     "bin": {
         "xlab": "dist/bin/xlab"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/x-9lab/xlab.git"
     }
 }
