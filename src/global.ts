@@ -1,30 +1,8 @@
+import type { InternalComponents } from "./components";
 export type { IPlat } from "./components/platform";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
-
-/**内置组件 */
-interface InternalComponents {
-    assets: typeof import("./components/assets");
-    cache: typeof import("./components/cache");
-    cluster: typeof import("./components/cluster");
-    combo: typeof import("./components/combo");
-    header: typeof import("./components/header");
-    "html-processor": typeof import("./components/html-processor");
-    injection: typeof import("./components/injection");
-    "js-processor": typeof import("./components/js-processor");
-    md5: typeof import("./components/md5");
-    mime: typeof import("./components/mime");
-    platform: typeof import("./components/platform");
-    querystring: typeof import("./components/querystring");
-    redirect: typeof import("./components/redirect");
-    uuid: typeof import("./components/uuid");
-    version: typeof import("./components/version");
-    cron: typeof import("./components/cron");
-    log: typeof import("./components/log");
-    "return-code": typeof import("./components/return-code");
-    common: typeof import("./components/common");
-}
 
 declare global {
     /**全局日志对象 */
@@ -177,7 +155,13 @@ declare global {
             strictSSL?: boolean;
 
             /**页端注入的 api 设置 */
-            apis?: Record<string, string>
+            apis?: Record<string, string>;
+
+            /**内部服务域名 */
+            internalServers?: Record<string, string>;
+
+            /**内部服务地址 */
+            internalApis?: Record<string, string>;
 
             /**服务 ip 地址 */
             ip?: string;

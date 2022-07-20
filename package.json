@@ -1,8 +1,8 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "9lab 服务端模块",
-    "versionDesc": "",
+    "versionDesc": "替换 request",
     "scripts": {
         "dev": "swc src -D ./src/bin --config-file .swcrc -d dist -w",
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",
@@ -20,20 +20,19 @@
         "@types"
     ],
     "dependencies": {
-        "koa": "2.13.1",
+        "koa": "2.13.4",
         "cron": "1.8.2",
-        "redis": "4.0.3",
-        "log4js": "1.1.1",
-        "liftoff": "3.1.0",
+        "log4js": "^1.1.1",
+        "liftoff": "4.0.0",
         "koa-ejs": "4.3.0",
-        "minimist": "1.2.5",
-        "request": "2.86.0",
-        "koa-body": "4.2.0",
-        "lru-cache": "6.0.0",
+        "minimist": "1.2.6",
+        "koa-body": "5.0.0",
+        "lru-cache": "^6.0.0",
+        "node-fetch": "3.0.0",
         "koa-static": "5.0.0",
-        "koa-router": "10.0.0",
+        "koa-router": "11.0.1",
         "http-proxy": "1.18.1",
-        "koa-compress": "5.0.1",
+        "koa-compress": "5.1.0",
         "@x-drive/utils": "1.1.19"
     },
     "devDependencies": {
@@ -43,7 +42,6 @@
         "colors": "1.4.0",
         "should": "11.2.1",
         "nodemon": "2.0.12",
-        "socket.io": "2.0.3",
         "chokidar": "3.5.3",
         "typescript": "4.3.4",
         "@types/node": "16.11.40",

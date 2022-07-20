@@ -80,14 +80,14 @@ function customConfigProcessor(conf: XLab.IConfig, env: string, envAddConfPath: 
         if (checkFileStat(APIS_PATH) && conf.passExtApis !== true) {
             let apis = []
             fs.readdirSync(APIS_PATH).forEach(file => {
-                if (path.extname(file) === ".js") {
+                if (!file.startsWith(".") && path.extname(file) === ".js") {
                     apis.push(
                         getRealDefaultMod(
                             require(`${APIS_PATH}/${file}`)
                         )
                     );
                 }
-            })
+            });
             if (apis.length) {
                 conf.apis = Object.assign(
                     conf.apis || {}

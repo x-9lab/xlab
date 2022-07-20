@@ -32,8 +32,6 @@ dist/
 # Log files #
 ##############
 private/logs/
-logs/
-log/
 
 # editor files #
 ##################

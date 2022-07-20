@@ -96,14 +96,55 @@ X-9lab 通用服务端
     function setSysConfig(conf: XLab.IConfig): void;
     ```
 - `requireModel` 全局获取 model 的方法
+    该方法只是为获取 model 提供一个快捷方式，也可以通过正常的方式去 require
+    - 存放路径 `business/@models`
+    - 使用方式
+        ```js
+        const { testModel } = requireModel("test");
+        ```
+    - 类型支持
+        由于 `requireModel` 是一个 `xlab` 的内置方法没有业务本身的 model 定义，因此需要业务方自行追加。出于管理方面的考虑，建议将所有的 model 定义放在一个文件中
+        ```ts
+        declare global {
+            namespace XLab {
+                interface IModels {
+                    /**测试 model */
+                    test: typeof import("./business/@models/test");
+                }
+            }
+        }
+        export { }
+        ```
 - `requireService` 全局获取 service 的方法
+    该方法只是为获取 service 提供一个快捷方式，也可以通过正常的方式去 require
+    - 存放路径 `business/@services`
+    - 使用方式
+        ```js
+        const { testFn } = requireService("test");
+        ```
+    - 类型支持
+        由于 `requireService` 是一个 `xlab` 的内置方法没有业务本身的 service 定义，因此需要业务方自行追加。出于管理方面的考虑，建议将所有的 service 定义放在一个文件中
+        ```ts
+        declare global {
+            namespace XLab {
+                interface IServices {
+                    /**测试 model */
+                    test: typeof import("./business/@services/test");
+                }
+            }
+        }
+        export { }
+        ```
 
 #### Namespace `XLab`
 `XLab` 提供了一些标准化的定义及系统配置
 - `IStdRes` 标准返回数据
 - `IConfig` 系统配置对象
+    - 外部模块追加配置项
 - `ICodeItem` 错误信息对象
 - `ICodeDetail` 错误定义
+- `IServices` 业务 services 定义
+- `IModels` 业务 model 定义
 
 ### 配置项
 |名称|类型|默认值|说明|
