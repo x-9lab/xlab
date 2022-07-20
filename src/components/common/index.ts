@@ -1,7 +1,7 @@
 "use strict";
 
 import { isArray, random } from "@x-drive/utils";
-import { getReturnCode } from "./return-code";
+import { getReturnCode } from "../return-code";
 import { isObject } from "@x-drive/utils";
 import querystring from "querystring";
 // import request from "request";
