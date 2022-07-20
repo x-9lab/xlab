@@ -1,3 +1,15 @@
+## v1.0.1
+
+V1.0.1 新增 request 模块,common 新增 sleep 函数,移除部分内容及升级依赖以及其他小修改
+* feat: 新增 request 模块
+* feat: common 新增 sleep 函数
+* chore: 升级依赖
+* feat: 升级相关依赖组件及调整关联模块
+* feat: 移除 combo
+* fix: 修复内置 api 文件判断问题
+* feat(middleware/service-mark): 调整输出信息
+* feat: 内置组件定义转由 components 下的文件定义，global 只做引用
+
 ## v1.0.0
 
 ### Fix
