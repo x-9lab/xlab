@@ -1,3 +1,8 @@
+## v1.0.2
+
+### Fix
+- fix: 修复编译后 components 中的 index.d.ts 丢失导致 global.d.ts 引用失败的问题 [56a1771](https://github.com/x-9lab/xlab/commit/56a17719a8cab89255541935e3d2f781fc7e256b)
+
 ## v1.0.1
 
 V1.0.1 新增 request 模块,common 新增 sleep 函数,移除部分内容及升级依赖以及其他小修改
