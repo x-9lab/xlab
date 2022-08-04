@@ -1,5 +1,5 @@
 import { isObject, isUndefined, labelReplace, addQuery, copy, isString, extend, isNumber } from "@x-drive/utils";
-import type { RequestInit } from "node-fetch";
+import type { RequestInit, Response } from "node-fetch";
 import { isExecutable } from "@x-drive/utils";
 import resolve from "./resolve-uri";
 import { sleep } from "../common";
@@ -131,7 +131,7 @@ async function httpFetch<T = unknown>(
     , config?: IFetchConfig
     , retry?: number
     , needProcessConfig: boolean = true
-) {
+): Promise<T> {
 
     if (needProcessConfig) {
         config = extend(
@@ -168,7 +168,6 @@ async function httpFetch<T = unknown>(
         const resp = await fetch(url, options);
         if (resp) {
             if (isExecutable(config.onResponse)) {
-                // @ts-ignore
                 await config.onResponse(resp);
             }
             const data = await resp[config.type]();
@@ -203,11 +202,6 @@ export { httpFetch as fetch }
  * @param query 请求参数
  */
 async function requsetGet<T = unknown>(uri: string, query?: Record<string, any>, config?: IFetchConfig) {
-    uri = preProcessor(
-        resolve(uri)
-        , query
-        , config?.random
-    );
     return await httpFetch<T>(
         "get"
         , uri
@@ -235,13 +229,6 @@ async function requestPost<T>(uri: string, query?: any, data?: any, config?: IFe
     if (isUndefined(data)) {
         data = {};
     }
-
-    uri = resolve(uri);
-    uri = preProcessor(
-        resolve(uri)
-        , query
-        , config?.random
-    );
 
     return await httpFetch<T>(
         "post"
