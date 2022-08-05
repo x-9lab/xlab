@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 import type Koa from "koa";
 
-type RouteOption = Record<string, string | string[]>;
+type RouteOption = Record<string, string | string[] | Function>;
 interface HtmlProcessorOptions {
     route?: RouteOption;
 }
@@ -35,7 +35,7 @@ function processorVar(html: string, req: Koa.Context) {
 //   根据配置设置相应头部
 function htmlProcessor(pathname: string, options: HtmlProcessorOptions, context: Koa.Context) {
 
-    var filename = path.resolve(conf.root + pathname);
+    var filename = path.resolve(conf.root, pathname);
     // ua = req.get('user-agent'),
     var cacheKey: string;
     var html: string;
@@ -54,11 +54,11 @@ function htmlProcessor(pathname: string, options: HtmlProcessorOptions, context:
     try {
         html = html_cache.get(cacheKey);
         if (!html) {
-            html = fs.readFileSync(filename, 'utf8');
+            html = fs.readFileSync(filename, "utf8");
             html_cache.set(cacheKey, html);
         }
     } catch (e) {
-        logger.error('HTML Process Error', e);
+        logger.error("HTML Process Error", e);
         return null;
     }
 
@@ -82,7 +82,7 @@ function htmlProcessor(pathname: string, options: HtmlProcessorOptions, context:
         Object.keys(headers).forEach(key => {
             let val: string | string[];
             if (isFunction(headers[key])) {
-                val = headers[key].call();
+                val = headers[key]();
             } else {
                 val = headers[key];
             }
