@@ -178,7 +178,7 @@ async function httpFetch<T = unknown>(
         reqLog.error(e);
         if (retry && retry > 0) {
             if (isNumber(config.retryDelay) && config.retryDelay > 0) {
-                await sleep(config.retryDelay);
+                await sleep(config.retryDelay, reqLog);
             }
             retry -= 1;
             return await httpFetch(

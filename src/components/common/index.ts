@@ -1,15 +1,14 @@
-"use strict";
-
-import { isArray, random } from "@x-drive/utils";
+import { sleep, labelReplace, fix0, numberFormat } from "@x-drive/utils";
 import { getReturnCode } from "../return-code";
 import { isObject } from "@x-drive/utils";
 import querystring from "querystring";
-// import request from "request";
 import crypto from "crypto";
 import path from "path";
 import fs from "fs";
 
 var logger;
+
+export { labelReplace, fix0, numberFormat, sleep }
 
 function checkLogger() {
     if (!logger) {
@@ -58,94 +57,6 @@ function params(dat: Record<string, any>, url: string) {
     return data;
 }
 export { params };
-
-/**
- * 按位数格式化数字
- * @param  val       要格式化的数字
- * @param  separator 分割符
- * @param  size      分割位数间隔
- * @return           格式化完的字符串
- */
-function numberFormat(val: number, separator: string, size: number) {
-    if (typeof (val) !== "number") {
-        return "0";
-    }
-    if (!separator) {
-        separator = ",";
-    }
-    if (!size) {
-        size = 3;
-    }
-    var last = size;
-
-    const valStr = val.toString();
-    var pos = valStr.indexOf(".");
-    var res = "";
-    if (pos === -1) {
-        pos = valStr.length;
-    } else {
-        res = valStr.substr(pos);
-    }
-    if (valStr.charAt(0) === "-") {
-        last++;
-    }
-    while (pos > last) {
-        pos -= size;
-        res = separator + valStr.substr(pos, size) + res;
-    }
-    if (pos) {
-        res = valStr.substr(0, pos) + res;
-    }
-    return res;
-}
-export { numberFormat };
-
-
-/**
- * 带花括号标签检测正则
- */
-const labelReplaceExp = /\{(\w+)\}/g;
-/**
- * 批量替换字符串中带花括号标签为指定数据
- * @param  tpl  待处理的字符串
- * @param  data 替换数据
- * @return      替换后端字符串
- */
-function labelReplace(tpl: string, data: Record<string, XLab.JsonValue>): string
-/**
- * 批量替换字符串中带花括号标签为指定数据
- * @param  tpl  待处理的字符串
- * @param  data 替换数据
- * @return      替换后端字符串
- */
-function labelReplace(tpl: string, data: XLab.JsonValue): string
-/**
- * 批量替换字符串中带花括号标签为指定数据
- * @param  tpl  待处理的字符串
- * @param  data 替换数据
- * @return      替换后端字符串
- */
-function labelReplace(tpl: any, data: any): string {
-    return tpl.replace(labelReplaceExp, function (label: string, key: string) {
-        return typeof (data) === "object" ? data[key] : data;
-    });
-}
-export { labelReplace }
-
-/**
- * 格式化数字, 自动补0前续
- * @param  number 要格式化的数字
- * @param  size   格式化后出来的数字位数
- * @return        格式化结果
- */
-function fix0(number: number, size: number) {
-    var num = number.toString();
-    while (num.length < size) {
-        num = "0" + num;
-    }
-    return num;
-}
-export { fix0 }
 
 const format_exp = /[YymndjNwaAghGHis]/g;
 
@@ -427,28 +338,3 @@ function getRealDefaultMod(mod: any) {
     return mod;
 }
 export { getRealDefaultMod };
-
-/**
-* 休眠随机时间
-* @param time 随机时间范围
-* @property min 最小时间(ms)
-* @property max 最大时间(ms)
-*/
-async function sleep(time: [min: number, max: number]): Promise<boolean>
-/**
- * 休眠
- * @param time 休眠时间(ms)
- */
-async function sleep(time: number): Promise<boolean>
-async function sleep(time: unknown) {
-    const delay: number = isArray(time) ? random(time[1], time[0]) : time as number;
-    checkLogger();
-    logger.log(`Sleep ${delay} ms`);
-    return await new Promise(res => {
-        setTimeout(() => {
-            res(true);
-        }, delay);
-    });
-}
-
-export { sleep };

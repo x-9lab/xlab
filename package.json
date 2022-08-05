@@ -1,6 +1,6 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "9lab 服务端模块",
     "versionDesc": "修复 type 异常",
     "scripts": {
@@ -33,7 +33,7 @@
         "koa-router": "11.0.1",
         "http-proxy": "1.18.1",
         "koa-compress": "5.1.0",
-        "@x-drive/utils": "1.1.19"
+        "@x-drive/utils": "1.1.22"
     },
     "devDependencies": {
         "co": "4.6.0",
