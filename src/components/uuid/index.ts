@@ -3,7 +3,15 @@ import { networkInterfaces } from "os";
 import { md5 } from "../md5";
 
 var netInterfaces = networkInterfaces();
-const MAC = ((netInterfaces && netInterfaces.en0 || []).find(en => en.mac !== "00:00:00:00:00:00") || { "mac": "99:00:99:00:99:00" }).mac;
+/**当前机器的 mac */
+export const X_MAC = Object
+    .keys(netInterfaces)
+    .sort()
+    .map(key => netInterfaces[key])
+    .flat(1)
+    .find(en => {
+        return en && en.family && en.family.toLowerCase() === "ipv4" && en.mac !== "00:00:00:00:00:00" ? true : false;
+    })?.mac || null;
 netInterfaces = null;
 
 /**
@@ -15,7 +23,7 @@ function uuid(one: string, tow: string) {
     var r = random(2333333, 23333).toString(16);
     r = r.length < 6 ? r += "0" : r;
     return [
-        md5([one, MAC, tow].join("&"))
+        md5([one, X_MAC, tow].join("&"))
         , Date.now().toString(16)
         , r
     ].join("-");
