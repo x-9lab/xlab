@@ -1,6 +1,6 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.0.4",
+    "version": "1.0.3",
     "description": "9lab 服务端模块",
     "versionDesc": "修复 type 异常",
     "scripts": {
