@@ -1,6 +1,7 @@
 "use strict";
 import { isArray, isString, isFunction, isAsyncFunction } from "@x-drive/utils";
 import { checkFileStat, getRealDefaultMod } from "./components/common";
+import XConfig from "./default-x-config";
 import { get } from "./config";
 import path from "path";
 
@@ -10,7 +11,7 @@ function processCustom() {
 
     const CustomPath = path.resolve(
         process.cwd()
-        , "@server"
+        , XConfig.businessDir
         , "custom"
     );
 

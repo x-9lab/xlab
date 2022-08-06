@@ -3,6 +3,7 @@ import "./global";
 import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
 import { on as cron } from "./components/cron";
+import XConfig from "./default-x-config";
 import staticServe from "koa-static";
 import router from "koa-router";
 import path from "path";
@@ -78,7 +79,7 @@ app.use(badRequest);
 if (config.enableCron) {
     // 定时任务
     cron(
-        path.resolve(process.cwd(), "@server", "cron")
+        path.resolve(process.cwd(), XConfig.businessDir, "cron")
     );
 }
 

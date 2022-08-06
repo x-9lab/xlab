@@ -2,6 +2,7 @@
 
 import { getRealDefaultMod } from "./components/common";
 import { isArray, isString } from "@x-drive/utils";
+import XConfig from "./default-x-config";
 import type koa from "koa";
 
 const cwd = process.cwd();
@@ -36,7 +37,7 @@ function loadMiddleware(app: koa) {
             } else {
                 app.use(
                     getRealDefaultMod(
-                        require(`${cwd}/@server/middleware/${name}`)
+                        require(`${cwd}/${XConfig.businessDir}/middleware/${name}`)
                     )(conf)
                 );
             }

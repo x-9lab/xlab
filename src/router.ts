@@ -1,5 +1,6 @@
 import { isArray, isObject, isFunction, isAsyncFunction } from "@x-drive/utils";
 import { walk, checkFileStat, getRealDefaultMod } from "./components/common";
+import XConfig from "./default-x-config";
 import type Router from "koa-router";
 import path from "path";
 
@@ -94,7 +95,7 @@ function appRouter(router: Router) {
     walk(_p, 0, processBusiness);
 
     // 支持自定义 api
-    _p = path.resolve(process.cwd(), "@server", "business");
+    _p = path.resolve(process.cwd(), XConfig.businessDir, "business");
     if (process.cwd() !== __dirname && checkFileStat(_p)) {
         walk(_p, 0, processBusiness);
     }

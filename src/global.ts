@@ -1,5 +1,6 @@
 import type { InternalComponents } from "./components";
 export type { IPlat } from "./components/platform";
+import XConfig from "./default-x-config";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
@@ -225,6 +226,18 @@ declare global {
 
         /**业务错误定义 */
         type ICodeDetail = Record<string, ICodeItem>;
+
+        /**模块配置 */
+        interface XConfig {
+            /**watch 模式配置 */
+            watch?: {
+                /**是否启用 watch */
+                enable: boolean;
+            }
+
+            /**服务端业务目录，默认是 @server */
+            businessDir?: string;
+        }
     }
 }
 
@@ -253,7 +266,7 @@ global.requireMod = requireMod;
 /**
  * model 存放路径
  */
-const MODEL_PATH = path.resolve(process.cwd(), "@server", "business", "@models");
+const MODEL_PATH = path.resolve(process.cwd(), XConfig.businessDir, "business", "@models");
 
 /**
  * 全局获取 model 的方法
@@ -270,7 +283,7 @@ global.requireModel = requireModel;
 /**
  * services 存放目录
  */
-const SERVICES_PATH = path.resolve(process.cwd(), "@server", "business", "@services");
+const SERVICES_PATH = path.resolve(process.cwd(), XConfig.businessDir, "business", "@services");
 
 /**
  * 全局获取 service 的方法
