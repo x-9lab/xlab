@@ -302,10 +302,10 @@
   dependencies:
     chalk "4.1.0"
 
-"@x-drive/utils@1.1.19":
-  version "1.1.19"
-  resolved "https://registry.yarnpkg.com/@x-drive/utils/-/utils-1.1.19.tgz#55d66e86375beeb0bbd21f6a9459173f7ef4c5a9"
-  integrity sha512-Nz8RW+G81y6YCUcNsqWoRt47gk3HE/38eap5cGzFwGgOHPdWr+jKkge2DEwf0t6ViSh0a49niNhEtGi0jB6nvw==
+"@x-drive/utils@1.1.22":
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/@x-drive/utils/-/utils-1.1.22.tgz#883ef901382a27adb228110ae3ffcdb73bdaff49"
+  integrity sha512-G1yOR8x1xCCt7WJwTRcbJxoI8r4ZD1HCQkLpIaJfNCx2PPT8+15eexxiYmx2nJ8SN4QxOIdiFQfoUf2ABgIc3Q==
 
 abbrev@1:
   version "1.1.1"
