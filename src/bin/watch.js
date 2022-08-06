@@ -1,3 +1,4 @@
+const XConfig = require("../default-x-config");
 const { date } = require("@x-drive/utils");
 const crossSpawn = require("cross-spawn");
 const colors = require("colors/safe");
@@ -125,7 +126,7 @@ function setup(config, wait = 250) {
                 // 默认业务自定义服务端业务文件夹
                 const customDir = path.resolve(
                     process.cwd()
-                    , "@server"
+                    , XConfig.businessDir
                 );
                 config.paths = [customDir];
             }
