@@ -1,4 +1,5 @@
 import { checkFileStat, getRealDefaultMod } from "../components/common";
+import XConfig from "../default-x-config";
 import { merge } from "@x-drive/utils"
 import path from "path";
 import fs from "fs";
@@ -7,7 +8,7 @@ function customConfigProcessor(conf: XLab.IConfig, env: string, envAddConfPath: 
     // 业务自定义服务端业务文件夹
     const customDir = path.resolve(
         process.cwd()
-        , "@server"
+        , XConfig.businessDir
     );
     // 是否存在业务自定义服务端业务文件夹
     const hasCustom = checkFileStat(customDir);
@@ -72,7 +73,7 @@ function customConfigProcessor(conf: XLab.IConfig, env: string, envAddConfPath: 
     if (hasCustom) {
         const APIS_PATH = path.resolve(
             process.cwd()
-            , "@server"
+            , XConfig.businessDir
             , "@config"
             , "@apis"
         );
