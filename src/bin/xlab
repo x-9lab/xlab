@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 const argv = require("minimist")(process.argv.slice(2));
-const { merge } = require("@x-drive/utils");
+const { merge, isString } = require("@x-drive/utils");
+const XConfig = require("../default-x-config");
 const Liftoff = require("liftoff");
 
 const cli = new Liftoff({
     "name": "x-lab"
     , "processTitle": "X Lab"
     , "moduleName": "xlab"
-    , "configName": "xlab-config"
+    , "configName": "xlab.config"
     , "extensions": {
         ".js": null
     }
@@ -17,6 +18,7 @@ const cli = new Liftoff({
 const hasWatch = argv.w || argv.watch;
 
 function onLaunch(env) {
+    /**@type {XLab.XConfig} */
     let config = {
         "watch": {
             "enable": false
@@ -29,6 +31,9 @@ function onLaunch(env) {
                 merge(config, customConfig);
             }
         } catch (e) { }
+    }
+    if (isString(config.businessDir)) {
+        XConfig.businessDir = config.businessDir;
     }
     if (hasWatch) {
         config.watch.enable = true;
