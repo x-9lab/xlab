@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "description": "xlab 服务端模块例子",
     "scripts": {
-        "start-dev": "cross-env NODE_ENV=development xlab PORT=3001",
-        "start-prod": "cross-env NODE_ENV=production xlab PORT=3001"
+        "start-dev": "cross-env NODE_ENV=development ../dist/bin/xlab PORT=3001",
+        "start-prod": "cross-env NODE_ENV=production ../dist/bin/xlab PORT=3001"
     },
     "engines": {
         "node": ">8.0.0"
