@@ -1,4 +1,4 @@
-const XConfig = require("../default-x-config");
+const XConfig = require("../default-x-config").default;
 const { date } = require("@x-drive/utils");
 const crossSpawn = require("cross-spawn");
 const colors = require("colors/safe");
