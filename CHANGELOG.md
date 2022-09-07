@@ -1,3 +1,15 @@
+## v1.0.5
+
+### Fix
+- fix: 修复 ICodeDetail 无法扩展的问题 [9eaf1f6](https://github.com/x-9lab/xlab/commit/9eaf1f67c99702bd81b81f43c3b3e803da2ac8b1)
+- fix: 修复取值异常导致的错误 [4ca9d66](https://github.com/x-9lab/xlab/commit/4ca9d665e1715cab732dd27811b7edbfc6ba2704)
+- fix: 修复配置不正常传递的问题 [eb5d805](https://github.com/x-9lab/xlab/commit/eb5d805ded0b7a7f3e1ec717c868c9fb0266b8ba)
+- fix:  bugfix 、upgrade packages  and other (#3) [91ea20a](https://github.com/x-9lab/xlab/commit/91ea20acf7bc8f88de434db54ba000aa014d6a31)
+
+### Feat
+- feat: 使用配置文件中的业务目录 [65cd753](https://github.com/x-9lab/xlab/commit/65cd75333440a1d51ec2d81d76a8c0838128715c)
+- feat: 修改配置文件名称，主要业务目录支持配置 [25299ff](https://github.com/x-9lab/xlab/commit/25299ffe66b38a4eeacf31fccd56dc64b1c5869c)
+
 ## v1.0.2
 
 ### Fix
