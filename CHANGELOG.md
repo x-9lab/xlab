@@ -1,3 +1,8 @@
+## v1.0.6
+
+### Feat
+- feat: 支持根目录下的点配置文件 [61b5eb5](https://github.com/x-9lab/xlab/commit/61b5eb5919e9d12fec7455688fe27615274220ac)
+
 ## v1.0.5
 
 ### Fix
