@@ -4,6 +4,7 @@ import XConfig from "./default-x-config";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
+import fs from "fs";
 
 declare global {
     /**全局日志对象 */
@@ -58,6 +59,9 @@ declare global {
     * @param  conf 配置项
     */
     function setSysConfig(conf: XLab.IConfig): void;
+
+    /**全局注入挂在对象 */
+    var XLAB: Record<string, XLab.JsonValue>;
 
     namespace XLab {
 
@@ -362,3 +366,5 @@ function setSysConfig(conf: XLab.IConfig) {
     update(conf);
 };
 global.setSysConfig = setSysConfig;
+
+global.XLAB = {};

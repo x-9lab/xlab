@@ -4,6 +4,7 @@ import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
 import { on as cron } from "./components/cron";
 import XConfig from "./default-x-config";
+import { processDotFile } from "./dot-file";
 import staticServe from "koa-static";
 import router from "koa-router";
 import path from "path";
@@ -18,6 +19,8 @@ import loadMiddleware from "./middlewares";
 import badRequest from "./middleware/bad-request";
 
 const logger = globalLog.getLogger("system");
+
+processDotFile(config.env, logger);
 
 // 只在 master 上输出的日志
 global.masterLog = log;
