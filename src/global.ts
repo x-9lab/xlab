@@ -225,7 +225,41 @@ declare global {
         }
 
         /**业务错误定义 */
-        type ICodeDetail = Record<string, ICodeItem>;
+        interface ICodeDetail {
+            /**
+            操作失败
+
+            作为任何未定义失败的默认返回
+             */
+            FAIL: ICodeItem;
+
+            /**操作成功 */
+            SUCCESS: ICodeItem;
+
+            /**业务繁忙 */
+            BUSY: ICodeItem;
+
+            /**参数错误 */
+            WRONG_PARAMETER: ICodeItem;
+
+            /**数据不存在 */
+            NOT_FOUND: ICodeItem;
+
+            /**没有权限 */
+            PERMISSION_DENIED: ICodeItem;
+
+            /**服务繁忙 */
+            SERVER_BUSY: ICodeItem;
+
+            /**服务超时 */
+            SERVER_TIMEOUT: ICodeItem;
+
+            /**未知错误 */
+            UNCHECK_ERROR: ICodeItem;
+        }
+
+
+        // type ICodeDetail = Record<string, ICodeItem>;
 
         /**模块配置 */
         interface XConfig {

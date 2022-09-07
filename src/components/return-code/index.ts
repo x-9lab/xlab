@@ -2,7 +2,7 @@ import { isBoolean, isNumber, isString } from "@x-drive/utils";
 /**
  * 状态详细信息
  */
-const CODE_DETAIL = {
+const CODE_DETAIL: XLab.ICodeDetail = {
     "FAIL": {
         "errorcode": -1
         , "msg": "系统繁忙，请稍候再试"
@@ -134,7 +134,7 @@ export { getCodeDetail }
  * 设置新的错误代码
  * @param data 新的错误代码数据
  */
-function set(data: XLab.ICodeDetail) {
+function set(data: Record<string, XLab.ICodeItem>) {
     if (data && typeof (data) === "object") {
         Object.keys(data).forEach(function (key) {
             CODE_DETAIL[key] = data[key];
