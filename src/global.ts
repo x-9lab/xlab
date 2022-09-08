@@ -4,7 +4,6 @@ import XConfig from "./default-x-config";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
-import fs from "fs";
 
 declare global {
     /**全局日志对象 */
@@ -200,9 +199,6 @@ declare global {
 
             /**移动端入口文件地址(旧版逻辑) */
             routeMobile?: string;
-
-            /**不同端入口地址设置 */
-            launchRouter?: Record<string, string>;
 
             /**定时任务设置 */
             cron?: {

@@ -11,7 +11,6 @@ const CONFIG: XLab.IConfig = {
     , "enableCron": false
     , "middleware": []
     , "strictSSL": false
-    , "launchRouter": {}
     , "root": "public"
 }
 

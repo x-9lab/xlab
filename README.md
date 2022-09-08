@@ -184,7 +184,7 @@ X-9lab 通用服务端
 |clearLocalStorage|`boolean`||是否每次都强制清除 LocalStorage|
 |pathReplaceRegExp|`string`||处理代理过来多余的地址层级路径替换判断正则|
 |routeMobile|`string`||移动端入口文件地址(旧版逻辑)|
-|launchRouter|`Record<string, string>`||不同端入口地址设置|
+|launchRouter|`Record<string, string>`||不同端入口地址设置, 由 `@x-9lab/launch-detect` 提供支持|
 |cron|`{def?: number;}`|{"def": 60}|定时任务设置|
 |injection|`string[]`|[]|注入参数列表|
 |indexPageCacheTime|`number`||首页缓存时间|
