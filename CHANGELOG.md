@@ -1,3 +1,8 @@
+## v1.0.7
+
+### Feat
+- feat: 去除 launchRouter 的定义，交由 x-drive/launch-detect 提供支持 [830f929](https://github.com/x-9lab/xlab/commit/830f9290322d9c10915959f54c28876a7f25b907)
+
 ## v1.0.6
 
 ### Feat
