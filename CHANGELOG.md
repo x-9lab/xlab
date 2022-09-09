@@ -1,3 +1,8 @@
+## v1.0.8
+
+### Fix
+- fix: 升级依赖，解决匹配问题 [a90bfba](https://github.com/x-9lab/xlab/commit/a90bfbabbd3229a469824015f7c93f02eded172a)
+
 ## v1.0.7
 
 ### Feat
