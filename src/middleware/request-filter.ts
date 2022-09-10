@@ -1,9 +1,42 @@
 "use strict";
 
 import init, { filter as htmlFilter } from "./@bin/html-filter";
-import url from "url";
 import type Koa from "koa";
+import url from "url";
 
+/**资源类型 */
+interface ISrcType {
+    /**是否是 js 文件 */
+    js: boolean;
+    /**是否是 html 文件 */
+    html: boolean;
+    /**是否是图片文件 */
+    img: boolean;
+    /**是否是 css 文件 */
+    css: boolean;
+    /**是否是文件夹 */
+    dir: boolean;
+    /**是否是静态文件 */
+    static: boolean;
+    /**是否是模板文件 */
+    tpl: boolean;
+    /**是否是字体文件 */
+    font: boolean;
+}
+
+declare module "koa" {
+    /**系统默认 state */
+    interface DefaultState {
+        /**资源类型 */
+        srcType: ISrcType;
+
+        /**请求域名 */
+        originHost: string | string[];
+
+        /**请求版本 */
+        ver: Record<string, string>;
+    }
+}
 
 const IS_STATIC_RE = /^\/.*\.(ttf|woff|eot|html|css|js|json|png|jpeg|jpg|gif|bmp|handlebars|mp3|mp4|m3u8|avi|mpg|mpeg|xml|json|tpl)$/i;
 const IS_IMG_RE = /\.(jpg|jpeg|png|gif)$/i;
@@ -61,7 +94,7 @@ async function filter(ctx: Koa.Context, next: Koa.Next) {
     var pathname = parsedUrl.pathname;
     ctx.state.parsedUrl = parsedUrl;
 
-    var srcType = {
+    var srcType: ISrcType = {
         "js": false
         , "html": false
         , "img": false
