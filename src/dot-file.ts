@@ -1,6 +1,6 @@
+import { isArray } from "@x-drive/utils";
 import path from "path";
 import fs from "fs";
-import { isArray } from "@x-drive/utils";
 
 /**行分割正则 */
 const LINE_SPLIT_REGEXP = /[\s]?=[\s]?/;

@@ -35,6 +35,13 @@ declare module "koa" {
 
         /**请求版本 */
         ver: Record<string, string>;
+
+        /**
+        经过解析后的请求 url
+
+        @see `https://nodejs.org/dist/latest-v16.x/docs/api/url.html`
+         */
+        parsedUrl: url.Url;
     }
 }
 
