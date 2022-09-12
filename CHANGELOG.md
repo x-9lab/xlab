@@ -1,3 +1,10 @@
+## v1.0.9
+
+### Feat
+- feat: cors 支持 .lo 本地域名 [4797882](https://github.com/x-9lab/xlab/commit/479788226cdbc9b8cc1e3594f9beb055f68c7e8c)
+- feat: 增加 ctx.state.parsedUrl 的定义 [1dc8270](https://github.com/x-9lab/xlab/commit/1dc827063e13f9a6e62d86bac5085715b53025b2)
+- feat(request-filter): 增加 ctx.state 中的相关定义 [bd472b9](https://github.com/x-9lab/xlab/commit/bd472b96d55fff8dc68353e38e57345ab9d41faf)
+
 ## v1.0.8
 
 ### Fix
