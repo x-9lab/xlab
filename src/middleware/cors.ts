@@ -23,7 +23,7 @@ const IS_LOCAL: Record<string, boolean> = {
 }
 
 /**根域获取正则 */
-const ROOT_NAME_REGEXP = /[\w-]*\.(?:com|cc|cn|asia|biz|coop|edu|gov|int|info|jobs|mobi|name|net|org|pro|tel|trave)(\.[a-z]{2})?/im;
+const ROOT_NAME_REGEXP = /[\w-]*\.(?:com|lo|cc|cn|asia|biz|coop|edu|gov|int|info|jobs|mobi|name|net|org|pro|tel|trave)(\.[a-z]{2})?/im;
 
 /**获取域名根域 */
 function getRootName(host: string) {
