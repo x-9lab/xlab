@@ -1,3 +1,8 @@
+## v1.0.10
+
+### Fix
+- fix: originHost 现在所有请求都会带上 [8e4af8e](https://github.com/x-9lab/xlab/commit/8e4af8e60ae5a255953305e72bc47a01319ebd78)
+
 ## v1.0.9
 
 ### Feat
