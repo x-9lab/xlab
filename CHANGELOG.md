@@ -1,3 +1,8 @@
+## v1.0.11
+
+### Fix
+- fix: 自动获取并设置正确的 access-control-request-headers [18cf945](https://github.com/x-9lab/xlab/commit/18cf9453dfaba4b9eceee6acbb78d8a8f6605b06)
+
 ## v1.0.10
 
 ### Fix
