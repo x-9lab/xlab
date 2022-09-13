@@ -82,6 +82,10 @@ export default function (config?: ICorsConfig) {
             ctx.set("Access-Control-Allow-Origin", origin);
             ctx.set("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
             ctx.set("Access-Control-Allow-Credentials", "true");
+            const acrHeaders = ctx.headers["access-control-request-headers"];
+            if (acrHeaders) {
+                ctx.set("Access-Control-Allow-Headers", acrHeaders);
+            }
             ctx.set("X-Cors", isLocal ? "local" : config.type || "custom");
         } else {
             ctx.set("X-Cors", "disabled");

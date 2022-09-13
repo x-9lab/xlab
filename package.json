@@ -1,6 +1,6 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "9lab 服务端模块",
     "versionDesc": "originHost 现在所有请求都会带上",
     "scripts": {
