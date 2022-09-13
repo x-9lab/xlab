@@ -1,8 +1,8 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "9lab 服务端模块",
-    "versionDesc": "cors 支持 .lo 本地域名",
+    "versionDesc": "originHost 现在所有请求都会带上",
     "scripts": {
         "dev": "swc src -D ./src/bin --config-file .swcrc -d dist -w",
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",

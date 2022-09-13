@@ -100,6 +100,7 @@ async function filter(ctx: Koa.Context, next: Koa.Next) {
     var parsedUrl = url.parse(ctx.url);
     var pathname = parsedUrl.pathname;
     ctx.state.parsedUrl = parsedUrl;
+    ctx.state.originHost = ctx.headers["x-forwarded-host"] || ctx.headers.host;
 
     var srcType: ISrcType = {
         "js": false
@@ -118,16 +119,12 @@ async function filter(ctx: Koa.Context, next: Koa.Next) {
         // 提取页面必要的信息
         // 由于 dir 也可能直接返回 HTML 页面
         // 所以这里也需要经过 HTML 的过滤器处理
-        ctx.state.originHost = ctx.headers["x-forwarded-host"] || ctx.headers.host;
         ctx.state.ver = htmlFilter(ctx.url);
     } else if (isStatic(pathname)) {
         srcType.static = true;
-
         if (isHtml(pathname)) {
             srcType.html = true;
-
             // 提取页面必要的信息
-            ctx.state.originHost = ctx.headers["x-forwarded-host"] || ctx.headers.host;
             ctx.state.ver = htmlFilter(ctx.url);
         } else if (isJS(pathname)) {
             srcType.js = true;
