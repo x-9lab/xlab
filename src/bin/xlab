@@ -5,9 +5,11 @@ const { merge, isString } = require("@x-drive/utils");
 const XConfig = require("../default-x-config").default;
 const Liftoff = require("liftoff");
 
+const { APP_NAME } = argv;
+
 const cli = new Liftoff({
     "name": "x-lab"
-    , "processTitle": "X Lab"
+    , "processTitle": APP_NAME ? `${APP_NAME}@XLab` : "XLab"
     , "moduleName": "xlab"
     , "configName": "xlab.config"
     , "extensions": {
