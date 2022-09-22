@@ -1,3 +1,8 @@
+## v1.0.12
+
+### Feat
+- feat: 增加对服务名称显示的支持，用于解决同个服务器上有多个实例运行时的识别问题 [658dd94](https://github.com/x-9lab/xlab/commit/658dd94121fd1bb9923ed874b7a3aee4e7ae8f21)
+
 ## v1.0.11
 
 ### Fix
