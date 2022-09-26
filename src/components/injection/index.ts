@@ -52,7 +52,7 @@ function inject(html: string, req: Koa.Context) {
 
             processorData[key] = dat;
         });
-        return labelReplace(html, processorData);
+        return labelReplace(html, processorData, true);
     }
     return html;
 }
