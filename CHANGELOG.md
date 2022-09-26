@@ -1,3 +1,8 @@
+## v1.0.13
+
+### Fix
+- fix: 修复 injection 模块错误替换逻辑 [862f309](https://github.com/x-9lab/xlab/commit/862f3091cb625b80364366296e17a3438fb9a8ed)
+
 ## v1.0.12
 
 ### Feat
