@@ -1,3 +1,8 @@
+## v1.1.0
+
+### Feat
+- feat: 新增 middlewares 中间件配置，支持新的配置逻辑，旧配置项将在 1.3.0 弃用 [e424b5b](https://github.com/x-9lab/xlab/commit/e424b5b9e15a44419924593b832c3ca4c064d8c8)
+
 ## v1.0.13
 
 ### Fix
