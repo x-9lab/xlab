@@ -3,6 +3,7 @@
 /**@type {XLab.IConfig} */
 const CONFIG = {
     "304": true,
+    // 旧写法，不推荐
     "middleware": [
         "service-mark",
         "request-filter",
@@ -14,6 +15,17 @@ const CONFIG = {
             }
         ]
     ],
+    // 新写法
+    "middlewares": {
+        "service-mark": true
+        , "request-filter": true
+        , "fresh-filter": true
+        , "cors": {
+            "config": {
+                "type": "sameroot"
+            }
+        }
+    },
     "port": 5000,
     "apis": {},
     "indexFileMaxage": 180,

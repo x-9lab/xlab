@@ -1,7 +1,7 @@
 "use strict";
 
 import { getRealDefaultMod } from "./components/common";
-import { isArray, isString } from "@x-drive/utils";
+import { isArray, isBoolean, isNumber, isString } from "@x-drive/utils";
 import XConfig from "./default-x-config";
 import type koa from "koa";
 
@@ -19,30 +19,86 @@ const INTERNAL_MIDDLEWARE = {
     , "cors": true
 };
 
+type OldMiddlewareList = (string | (string | Record<string, any>)[])[];
+
+/**兼容老的中间件声明 */
+function compatibleWithOldVer(list: OldMiddlewareList) {
+    const middlewares: Pick<XLab.IConfig, "middlewares"> = {};
+    list.forEach((item, index) => {
+        var subject: XLab.MiddlewareConfig;
+        var name: string;
+        subject = {
+            index
+        }
+        if (isString(item)) {
+            name = item as string;
+        } else if (isArray(item)) {
+            name = item[0] as string;
+            if (item[1]) {
+                subject.config = item[1] as Record<string, XLab.JsonValue>;
+            }
+        }
+        middlewares[name] = subject;
+    });
+
+    return middlewares;
+}
+
+/**获取中间件加载执行列表 */
+function getExeList(): XLab.MiddlewareConfig[] {
+    const config = getSysConfig();
+    var mConfig: Pick<XLab.IConfig, "middlewares">;
+
+    if (config.middlewares) {
+        mConfig = config.middlewares;
+    } else if (isArray(config.middleware) && config.middleware.length) {
+        masterLog("middlewares", "warn", "middleware 配置已弃用并将在 v1.3.0 之后删除，请使用 middlewares 配置中间件");
+        mConfig = compatibleWithOldVer(config.middleware);
+    } else {
+        mConfig = null;
+    }
+    if (mConfig) {
+        return Object
+            .keys(mConfig)
+            .filter(key => (isBoolean(mConfig[key]) ? mConfig[key] : true))
+            .map((key, index) => {
+                if (isBoolean(mConfig[key])) {
+                    mConfig[key] = {};
+                }
+                if (!isString(mConfig[key].name)) {
+                    mConfig[key].name = key;
+                }
+                if (!isNumber(mConfig[key].index)) {
+                    mConfig[key].index = index;
+                }
+                return mConfig[key];
+            })
+            .sort((now: XLab.MiddlewareConfig, next: XLab.MiddlewareConfig) => (now.index - next.index))
+    }
+    return [];
+}
+
 // ［最后3个中间件固定是 系统路由，静态文件服务，错误请求处理模块］
 /**加载中间件 */
 function loadMiddleware(app: koa) {
-    const config = getSysConfig();
-    if (isArray(config.middleware) && config.middleware.length) {
-        config.middleware.forEach(item => {
-            const isSrtItem = isString(item);
-            let name = isSrtItem ? item : item[0];
-            const conf = isSrtItem ? null : item[1];
-            if (INTERNAL_MIDDLEWARE[name as string]) {
+    const list = getExeList();
+    if (isArray(list) && list.length) {
+        list.forEach(item => {
+            if (INTERNAL_MIDDLEWARE[item.name]) {
                 app.use(
                     getRealDefaultMod(
-                        require(`./middleware/${name}`)
-                    )(conf)
+                        require(`./middleware/${item.name}`)
+                    )(item.config)
                 );
             } else {
                 app.use(
                     getRealDefaultMod(
-                        require(`${cwd}/${XConfig.businessDir}/middleware/${name}`)
-                    )(conf)
+                        require(`${cwd}/${XConfig.businessDir}/middleware/${item.name}`)
+                    )(item.config)
                 );
             }
 
-            masterLog(`MIDDLEWARE >>> [${name}] launch`);
+            masterLog(`MIDDLEWARE >>> [${item.name}] launch`);
         });
         console.log("");
     }

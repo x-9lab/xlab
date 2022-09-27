@@ -109,6 +109,18 @@ declare global {
             success?: boolean;
         }
 
+        /**中间件配置 */
+        type MiddlewareConfig = {
+            /**中间件名称 */
+            name?: string;
+
+            /**中间件位置 */
+            index?: number;
+
+            /**中间件配置 */
+            config?: Record<string, JsonValue>;
+        };
+
         interface IConfig {
             /**服务(应用)名称 */
             name?: string;
@@ -149,8 +161,14 @@ declare global {
             /**是否开启定时任务 */
             enableCron?: boolean;
 
-            /**开启的中间件列表 */
+            /**
+             * 开启的中间件列表
+             * @deprecated since version 1.1.0, 1.3.0 后将完全删除
+             */
             middleware?: (string | (string | Record<string, any>)[])[];
+
+            /**开启的中间件列表 */
+            middlewares?: Record<string, boolean | MiddlewareConfig>;
 
             /**自定模块配置 */
             custom?: string[];

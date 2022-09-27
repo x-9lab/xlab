@@ -175,7 +175,9 @@ X-9lab 通用服务端
 |staticHtmlFileMaxage|`number`|0|静态 html 文件缓存时间|
 |enableComboCache|`boolean`|true|是否开启 Combo 缓存|
 |enableCron|`boolean`|false|是否开启定时任务|
-|middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表 |
+|middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表。因不方便合并替换，v1.1.0 开始建议使用 `middlewares` 来配置 |
+|middlewares|`Record<string, MiddlewareConfig>`|{}|开启的中间件列表 |
+||MiddlewareConfig||`index` 用于定义中间件位置，不提供将使用配置对象中的默认顺序<br/> `name` 中间件名称，不提供将使用配置对象的键名<br/>`config` 中间件配置|
 |custom|`string[]`||自定模块配置|
 |strictSSL|`boolean`||是否启用严格 ssl|
 |apis|`Record<string, string>`|{}|页端注入的 api 设置|
