@@ -1,8 +1,8 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "9lab 服务端模块",
-    "versionDesc": "originHost 现在所有请求都会带上",
+    "versionDesc": "业务 api 文件夹支持接口级别通用中间件定义",
     "scripts": {
         "dev": "swc src -D ./src/bin --config-file .swcrc -d dist -w",
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",

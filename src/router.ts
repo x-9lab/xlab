@@ -1,8 +1,16 @@
 import { isArray, isObject, isFunction, isAsyncFunction } from "@x-drive/utils";
-import { walk, checkFileStat, getRealDefaultMod } from "./components/common";
+import { checkFileStat, getRealDefaultMod } from "./components/common";
 import XConfig from "./default-x-config";
 import type Router from "koa-router";
 import path from "path";
+import fs from "fs";
+
+/**
+ * 查找到文件时的处理函数
+ * @param tmpPath 文件地址
+ */
+type WalkCallback = (tmpPath: string, item: string, middlewares: string[]) => void;
+
 
 /**生成 api */
 function buildApi(api: string) {
@@ -12,11 +20,45 @@ function buildApi(api: string) {
     return `/api${api}`;
 }
 
+/**
+ * 递归处理文件夹
+ * @param  path         文件目录
+ * @param  middlewares  接口中间件
+ * @param  callback     查找到文件时的处理函数
+ */
+function walk(dir: string, middlewares: string[], callback: WalkCallback) {
+    var files = fs.readdirSync(dir);
+    files.forEach(function (item) {
+        if (!item.startsWith(".") && !item.endsWith(".d.ts")) {
+            var tmpPath = path.join(dir, item);
+            var stats = fs.statSync(tmpPath);
+            if (stats.isDirectory() && item.startsWith("$")) {
+                // 接口级别中间件
+                let middlewaresFiles = fs.readdirSync(tmpPath);
+                middlewaresFiles.forEach(function (name) {
+                    let tmpMwPath = path.join(tmpPath, name);
+                    let fileStat = fs.statSync(tmpMwPath);
+                    if (!fileStat.isDirectory() && !item.startsWith(".") && !item.endsWith(".d.ts")) {
+                        middlewares.push(tmpMwPath);
+                    }
+                });
+                // 简单做下排序
+                middlewares.sort();
+            }
+            if (stats.isDirectory() && !item.startsWith("@") && !item.startsWith("$")) {
+                walk(tmpPath, middlewares, callback);
+            } else if (!stats.isDirectory()) {
+                callback(tmpPath, item, middlewares);
+            }
+        }
+    });
+}
+
 /**加载业务服务接口 */
 function appRouter(router: Router) {
     const IS_API_REGEXP = /^\/api\//;
 
-    var processBusiness = function (modPath: string, item: string) {
+    var processBusiness: WalkCallback = function (modPath, item, middlewares) {
         var mod = require(
             path.resolve(modPath)
         );
@@ -84,6 +126,12 @@ function appRouter(router: Router) {
                 }
             }
 
+            if (middlewares && middlewares.length) {
+                let mws = middlewares.map(name => getRealDefaultMod(require(name)));
+                mod.splice.apply(mod, [1, 0, ...mws]);
+                mws = null;
+            }
+
             router[modName].apply(router, mod);
 
             masterLog("router", `Handling API >>> [${modName}] ${api}`);
@@ -92,12 +140,12 @@ function appRouter(router: Router) {
 
     // 业务基本目录
     var _p = path.resolve(__dirname, "business");
-    walk(_p, 0, processBusiness);
+    walk(_p, [], processBusiness);
 
     // 支持自定义 api
     _p = path.resolve(process.cwd(), XConfig.businessDir, "business");
     if (process.cwd() !== __dirname && checkFileStat(_p)) {
-        walk(_p, 0, processBusiness);
+        walk(_p, [], processBusiness);
     }
 
     processBusiness = null;
