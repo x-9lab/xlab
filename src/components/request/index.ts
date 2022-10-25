@@ -4,6 +4,7 @@ import { getFetch } from "@x-drive/node-fetch-warper";
 import { isExecutable } from "@x-drive/utils";
 import resolve from "./resolve-uri";
 import { sleep } from "../common";
+import { inspect } from "util";
 
 const reqLog = log.getLogger("Request");
 
@@ -175,7 +176,7 @@ async function httpFetch<T = unknown>(
         }
         return null;
     } catch (e) {
-        reqLog.error(e);
+        reqLog.error(inspect(e));
         if (retry && retry > 0) {
             if (isNumber(config.retryDelay) && config.retryDelay > 0) {
                 await sleep(config.retryDelay, reqLog);
