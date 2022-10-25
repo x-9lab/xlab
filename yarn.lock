@@ -302,6 +302,11 @@
   dependencies:
     chalk "4.1.0"
 
+"@x-drive/node-fetch-warper@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@x-drive/node-fetch-warper/-/node-fetch-warper-1.0.0.tgz#d332372afee77e2efe487026d4e93075bd9272df"
+  integrity sha512-gOwRTPu76HCLQvOqNip83/tXErYciB7RRZn+ohQm5p/11EAlofNHEtHRGGLPTjTK/BkN0qW63HvhqRM4iYxsng==
+
 "@x-drive/utils@1.1.23":
   version "1.1.23"
   resolved "https://registry.yarnpkg.com/@x-drive/utils/-/utils-1.1.23.tgz#34ba6c10dcae438b59bec60edb66b9069408724a"

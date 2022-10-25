@@ -1,9 +1,9 @@
 import { isObject, isUndefined, labelReplace, addQuery, copy, isString, extend, isNumber } from "@x-drive/utils";
 import type { RequestInit, Response } from "node-fetch";
+import { getFetch } from "@x-drive/node-fetch-warper";
 import { isExecutable } from "@x-drive/utils";
 import resolve from "./resolve-uri";
 import { sleep } from "../common";
-import fetch from "node-fetch";
 
 const reqLog = log.getLogger("Request");
 
@@ -164,7 +164,7 @@ async function httpFetch<T = unknown>(
         if (data) {
             options.body = data;
         }
-
+        const fetch = await getFetch();
         const resp = await fetch(url, options);
         if (resp) {
             if (isExecutable(config.onResponse)) {

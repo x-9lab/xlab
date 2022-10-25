@@ -1,6 +1,6 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "9lab 服务端模块",
     "versionDesc": "业务 api 文件夹支持接口级别通用中间件定义",
     "scripts": {
@@ -33,7 +33,8 @@
         "koa-router": "11.0.1",
         "http-proxy": "1.18.1",
         "koa-compress": "5.1.0",
-        "@x-drive/utils": "1.1.23"
+        "@x-drive/utils": "1.1.23",
+        "@x-drive/node-fetch-warper": "1.0.1"
     },
     "devDependencies": {
         "co": "4.6.0",
