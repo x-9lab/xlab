@@ -1,3 +1,13 @@
+## v1.2.1
+
+### Fix
+- fix: 修复异常信息显示不完整的问题 [c96e03b](https://github.com/x-9lab/xlab/commit/c96e03b5f77f189aa83ca6b8e4b581b2e26d7faf)
+- fix: 修复 node-fetch 不可用的问题 [dd32832](https://github.com/x-9lab/xlab/commit/dd32832de528d0f599c1fc20c06544e68c86df70)
+- fix: 修复 injection 模块替换逻辑错误 [862f309](https://github.com/x-9lab/xlab/commit/862f3091cb625b80364366296e17a3438fb9a8ed)
+
+### Feat
+- feat:业务 api 文件夹支持接口级别通用中间件定义 [3fd2507](https://github.com/x-9lab/xlab/commit/3fd2507cea51bc5578ad6d97ae8abee3f9a41331)
+
 ## v1.1.0
 
 ### Feat
