@@ -231,6 +231,9 @@ declare global {
 
             /**静态资源缓存时间 */
             staticResourceCacheTime?: number;
+
+            /**是否允许静态资源跨域访问 */
+            staticCros?: boolean;
         }
 
         /**业务错误数据对象 */

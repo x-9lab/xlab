@@ -63,10 +63,16 @@ appRouter(koaRouter);
 var staticServeOpts: Options = {};
 if (config.isProd) {
     staticServeOpts.maxage = config.staticMaxage;
-    const staticHtmlFileMaxage = config.staticHtmlFileMaxage;
-    staticServeOpts.setHeaders = function (res, path) {
-        if (staticHtmlFileMaxage && path.endsWith(".html")) {
-            res.setHeader("Cache-Control", `max-age=${staticHtmlFileMaxage}`);
+}
+staticServeOpts.setHeaders = function (res, path) {
+    if (config.isProd && config.staticHtmlFileMaxage && path.endsWith(".html")) {
+        res.setHeader("Cache-Control", `max-age=${config.staticHtmlFileMaxage}`);
+    }
+    if (config.staticCros) {
+        const { origin } = res.req.headers;
+        if (origin) {
+            res.setHeader("Access-Control-Allow-Origin", origin);
+            res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         }
     }
 }
