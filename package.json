@@ -1,8 +1,8 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "description": "9lab 服务端模块",
-    "versionDesc": "业务 api 文件夹支持接口级别通用中间件定义",
+    "versionDesc": "静态文件服务支持跨域",
     "scripts": {
         "dev": "swc src -D ./src/bin --config-file .swcrc -d dist -w",
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",

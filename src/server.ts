@@ -71,8 +71,9 @@ staticServeOpts.setHeaders = function (res, path) {
     if (config.staticCros) {
         const { origin } = res.req.headers;
         if (origin) {
+            res.setHeader("X-Cros-Static", origin);
             res.setHeader("Access-Control-Allow-Origin", origin);
-            res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
         }
     }
 }
