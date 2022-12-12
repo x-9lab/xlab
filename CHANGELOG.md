@@ -1,3 +1,9 @@
+## v1.3.1
+
+### Feat
+- feat: 增加跨域信息头 [3337605](https://github.com/x-9lab/xlab/commit/3337605fa74c59a738fff426428aa21ce93861e9)
+- feat: 静态文件服务支持跨域 [4fc678c](https://github.com/x-9lab/xlab/commit/4fc678ca7fe58da945a966ce82b2768802baef9a)
+
 ## v1.2.1
 
 ### Fix
