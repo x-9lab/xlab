@@ -178,6 +178,7 @@ X-9lab 通用服务端
 |debug|`boolean`|false|是否开启 debug 模式|
 |staticMaxage|`number`|1800000|静态文件缓存时间|
 |staticHtmlFileMaxage|`number`|0|静态 html 文件缓存时间|
+|staticCros|`boolean`|false|是否允许静态资源跨域访问|
 |enableComboCache|`boolean`|true|是否开启 Combo 缓存|
 |enableCron|`boolean`|false|是否开启定时任务|
 |middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表。因不方便合并替换，v1.1.0 开始建议使用 `middlewares` 来配置 |
