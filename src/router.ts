@@ -9,8 +9,10 @@ import fs from "fs";
  * 查找到文件时的处理函数
  * @param tmpPath 文件地址
  */
-type WalkCallback = (tmpPath: string, item: string, middlewares: string[]) => void;
+type WalkCallback = (tmpPath: string, item: string, middlewares: Record<string, string[]>) => void;
 
+/**API 服务目录 */
+const API_BUSINESS_DIR = "business";
 
 /**生成 api */
 function buildApi(api: string) {
@@ -26,7 +28,7 @@ function buildApi(api: string) {
  * @param  middlewares  接口中间件
  * @param  callback     查找到文件时的处理函数
  */
-function walk(dir: string, middlewares: string[], callback: WalkCallback) {
+function walk(dir: string, middlewares: Record<string, string[]>, callback: WalkCallback) {
     var files = fs.readdirSync(dir);
     files.forEach(function (item) {
         if (!item.startsWith(".") && !item.endsWith(".d.ts")) {
@@ -35,15 +37,18 @@ function walk(dir: string, middlewares: string[], callback: WalkCallback) {
             if (stats.isDirectory() && item.startsWith("$")) {
                 // 接口级别中间件
                 let middlewaresFiles = fs.readdirSync(tmpPath);
+                let mws = [];
                 middlewaresFiles.forEach(function (name) {
                     let tmpMwPath = path.join(tmpPath, name);
                     let fileStat = fs.statSync(tmpMwPath);
                     if (!fileStat.isDirectory() && !item.startsWith(".") && !item.endsWith(".d.ts")) {
-                        middlewares.push(tmpMwPath);
+                        mws.push(tmpMwPath);
                     }
                 });
                 // 简单做下排序
-                middlewares.sort();
+                mws.sort();
+                const partPath = dir.split(API_BUSINESS_DIR)[1] || path.posix.sep;
+                middlewares[partPath] = mws;
             }
             if (stats.isDirectory() && !item.startsWith("@") && !item.startsWith("$")) {
                 walk(tmpPath, middlewares, callback);
@@ -65,12 +70,13 @@ function appRouter(router: Router) {
         if (mod) {
             mod = getRealDefaultMod(mod);
 
-            let api_path = modPath.split("business");
+            let api_path = modPath.split(API_BUSINESS_DIR);
             let api;
+            let apiPart: string[];
             let modName: string;
 
             // 根据路径生成 url 规则
-            api = api_path[1].replace(".js", "").split("/");
+            api = api_path[1].replace(".js", "").split(path.posix.sep);
 
             // 文件名是 index
             const lastIsIndex = api[api.length - 1] === "index";
@@ -86,11 +92,13 @@ function appRouter(router: Router) {
                 if (!lastIsIndex) {
                     api.pop();
                 }
+                apiPart = api;
                 api = buildApi(
                     api.join("/")
                 );
                 mod.unshift(api);
             } else {
+                apiPart = api;
                 // 不是数组则把文件当作正常的 api 地址
                 api = buildApi(
                     api.join("/")
@@ -101,7 +109,10 @@ function appRouter(router: Router) {
             if (isObject(mod) && (isFunction(mod.handler) || isAsyncFunction(mod.handler))) {
                 modName = mod.method || "get";
                 api = mod.api || api;
-
+                apiPart = api.split("/");
+                if (apiPart[0] !== "") {
+                    apiPart.unshift("");
+                }
                 // 保证一定是以 api 开头的
                 if (!IS_API_REGEXP.test(api)) {
                     api = buildApi(api);
@@ -112,6 +123,16 @@ function appRouter(router: Router) {
                 } else {
                     mod = [api, mod.handler];
                 }
+            }
+
+            var dirMws = [];
+            var prevPart = "";
+            for (let i = 2; i < apiPart.length; i++) {
+                const part = `${prevPart}${path.posix.sep}${apiPart[i]}`;
+                if (middlewares[part]) {
+                    dirMws = dirMws.concat(middlewares[part]);
+                }
+                prevPart = part;
             }
 
             // 直接返回函数则直接绑定
@@ -126,8 +147,8 @@ function appRouter(router: Router) {
                 }
             }
 
-            if (middlewares && middlewares.length) {
-                let mws = middlewares.map(name => getRealDefaultMod(require(name)));
+            if (dirMws && dirMws.length) {
+                let mws = dirMws.map(name => getRealDefaultMod(require(name)));
                 mod.splice.apply(mod, [1, 0, ...mws]);
                 mws = null;
             }
@@ -139,13 +160,13 @@ function appRouter(router: Router) {
     }
 
     // 业务基本目录
-    var _p = path.resolve(__dirname, "business");
-    walk(_p, [], processBusiness);
+    var _p = path.resolve(__dirname, API_BUSINESS_DIR);
+    walk(_p, {}, processBusiness);
 
     // 支持自定义 api
-    _p = path.resolve(process.cwd(), XConfig.businessDir, "business");
+    _p = path.resolve(process.cwd(), XConfig.businessDir, API_BUSINESS_DIR);
     if (process.cwd() !== __dirname && checkFileStat(_p)) {
-        walk(_p, [], processBusiness);
+        walk(_p, {}, processBusiness);
     }
 
     processBusiness = null;
