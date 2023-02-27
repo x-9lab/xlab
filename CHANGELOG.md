@@ -1,3 +1,8 @@
+## v1.4.0
+
+### Fix
+- fix: 修复路由模块加载目录中间件逻辑 [be8754e](https://github.com/x-9lab/xlab/commit/be8754e82be55e174bb0adc9bdb65fb53d77ad8d)
+
 ## v1.3.1
 
 ### Feat
