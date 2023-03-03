@@ -1,3 +1,8 @@
+## v1.4.1
+
+### Fix
+- fix: 修复路由中间件加载异常的问题 [83a26b6](https://github.com/x-9lab/xlab/commit/83a26b608712bc503a97bfba156700221c98ac19)
+
 ## v1.4.0
 
 ### Fix
