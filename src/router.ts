@@ -127,7 +127,10 @@ function appRouter(router: Router) {
 
             var dirMws = [];
             var prevPart = "";
-            for (let i = 2; i < apiPart.length; i++) {
+            for (let i = 0; i < apiPart.length; i++) {
+                if (!apiPart[i] || apiPart[i] === "api") {
+                    continue;
+                }
                 const part = `${prevPart}${path.posix.sep}${apiPart[i]}`;
                 if (middlewares[part]) {
                     dirMws = dirMws.concat(middlewares[part]);
