@@ -1,7 +1,5 @@
-"use strict";
-
-import { getRealDefaultMod } from "./components/common";
 import { isArray, isBoolean, isNumber, isString } from "@x-drive/utils";
+import { getRealDefaultMod } from "./components/common";
 import XConfig from "./default-x-config";
 import type koa from "koa";
 
@@ -19,31 +17,6 @@ const INTERNAL_MIDDLEWARE = {
     , "cors": true
 };
 
-type OldMiddlewareList = (string | (string | Record<string, any>)[])[];
-
-/**兼容老的中间件声明 */
-function compatibleWithOldVer(list: OldMiddlewareList) {
-    const middlewares: Pick<XLab.IConfig, "middlewares"> = {};
-    list.forEach((item, index) => {
-        var subject: XLab.MiddlewareConfig;
-        var name: string;
-        subject = {
-            index
-        }
-        if (isString(item)) {
-            name = item as string;
-        } else if (isArray(item)) {
-            name = item[0] as string;
-            if (item[1]) {
-                subject.config = item[1] as Record<string, XLab.JsonValue>;
-            }
-        }
-        middlewares[name] = subject;
-    });
-
-    return middlewares;
-}
-
 /**获取中间件加载执行列表 */
 function getExeList(): XLab.MiddlewareConfig[] {
     const config = getSysConfig();
@@ -51,9 +24,6 @@ function getExeList(): XLab.MiddlewareConfig[] {
 
     if (config.middlewares) {
         mConfig = config.middlewares;
-    } else if (isArray(config.middleware) && config.middleware.length) {
-        masterLog("middlewares", "warn", "middleware 配置已弃用并将在 v1.3.0 之后删除，请使用 middlewares 配置中间件");
-        mConfig = compatibleWithOldVer(config.middleware);
     } else {
         mConfig = null;
     }
