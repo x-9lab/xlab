@@ -1,5 +1,4 @@
 import type { InternalComponents } from "./components";
-export type { IPlat } from "./components/platform";
 import XConfig from "./default-x-config";
 import { update, get } from "./config";
 import type Koa from "koa";
