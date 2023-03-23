@@ -52,6 +52,11 @@ const windowVersionMap = {
 
 const unknownStr = "Unknown";
 
+/**
+ * 根据 ua 检测客户端信息
+ * @param ua 请求 ua
+ * @deprecated `v1.7.0` 后弃用，请直接使用 `@x-drive/which-platform`
+ */
 function check(ua: string) {
     ua = String(ua);
 

@@ -66,7 +66,7 @@ function fetch(mod: ICronJob, name: string, dont?: boolean) {
  */
 function killSomeone(name: string) {
 	if (CRON_TIMERS[name]) {
-		console.log("Stop crontab job ", name);
+		logger.info("Stop crontab job ", name);
 		clearTimeout(CRON_TIMERS[name]);
 		CRON_TIMERS[name] = null;
 	}
