@@ -58,77 +58,6 @@ function params(dat: Record<string, any>, url: string) {
 }
 export { params };
 
-const format_exp = /[YymndjNwaAghGHis]/g;
-
-/**
- * 格式化时间
- * @param  format 日期格式
- * @param  ts     时间戳
- * @return        格式化后的时间
- */
-function date(format: string, ts: number): string
-/**
- * 格式化时间
- * @param  format 日期格式
- * @param  ts     日期字符串
- * @return        格式化后的时间
- */
-function date(format: string, ts: string): string
-/**
- * 格式化时间
- * @param  format 日期格式
- * @param  ts     日期对象
- * @return        格式化后的时间
- */
-function date(format: string, ts: Date): string
-/**
- * 格式化时间
- * @param  format 日期格式
- * @param  ts     日期数据(时间戳, 字符串)
- * @return        格式化后的时间
- */
-function date(format: any, ts: any): string {
-    ts = new Date(ts);
-    return format.replace(format_exp, function (tag) {
-        switch (tag) {
-            case "Y":
-                return ts.getFullYear();
-            case "y":
-                return ts.getFullYear() % 100;
-            case "m":
-                return fix0(ts.getMonth() + 1, 2);
-            case "n":
-                return ts.getMonth() + 1;
-            case "d":
-                return fix0(ts.getDate(), 2);
-            case "j":
-                return ts.getDate();
-            case "N":
-                return ts.getDay();
-            case "w":
-                return ts.getDay() % 7;
-            case "a":
-                return ts.getHours() < 12 ? "am" : "pm";
-            case "A":
-                return ts.getHours() < 12 ? "AM" : "PM";
-            case "g":
-                return ts.getHours() % 12 + 1;
-            case "h":
-                return fix0(ts.getHours() % 12 + 1, 2);
-            case "G":
-                return ts.getHours();
-            case "H":
-                return fix0(ts.getHours(), 2);
-            case "i":
-                return fix0(ts.getMinutes(), 2);
-            case "s":
-                return fix0(ts.getSeconds(), 2);
-        }
-        return tag;
-    });
-}
-export { date }
-
 /**
  * 生成操作结果数据对象
  * @param  status 返回码
@@ -204,47 +133,6 @@ function object2Array(obj: XLab.JsonObject) {
     return arr;
 }
 export { object2Array };
-
-/**
- * 默认 Promise 处理函数
- * @param resolve Promise 成功处理函数
- * @param reject  Promise 异常处理函数
- */
-function defPromiseHandler<T = any>(resolve: Function, reject: Function) {
-    return function (err: Error, re: T) {
-        if (err) {
-            console.error(err);
-            reject(err);
-        } else if (re) {
-            resolve(re);
-        } else {
-            reject("No result.");
-        }
-    }
-}
-export { defPromiseHandler }
-
-/**Promise 包装函数 */
-function promiseWapper(...args: any[]) {
-    var handler = args.pop();
-    handler = handler;
-    var p = new Promise(handler);
-    return p;
-}
-export { promiseWapper }
-
-/**
- * 封装一个 promise 形式的 request 方法
- * @deprecated 请直接使用 component 中的 request 模块
- */
-function requestWapper<T = any>(...args: any[]) {
-    return new Promise(function (_, reject) {
-        reject(
-            new Error("请直接使用 component 中的 request 模块")
-        );
-    });
-}
-export { requestWapper }
 
 
 /**
