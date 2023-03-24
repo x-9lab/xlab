@@ -164,7 +164,9 @@ function appRouter(router: Router) {
 
     // 业务基本目录
     var _p = path.resolve(__dirname, API_BUSINESS_DIR);
-    walk(_p, {}, processBusiness);
+    if (checkFileStat(_p)) {
+        walk(_p, {}, processBusiness);
+    }
 
     // 支持自定义 api
     _p = path.resolve(process.cwd(), XConfig.businessDir, API_BUSINESS_DIR);
