@@ -1,3 +1,18 @@
+## v1.5.0
+
+### Fix
+- fix: 修复内部 api 目录不存在导致的异常 [be5fc0e](https://github.com/x-9lab/xlab/commit/be5fc0e3915486edf44e5cf776255e1d26e09c70)
+
+### Feat
+- feat: 不再内置 utils/cookie 接口 [a7df043](https://github.com/x-9lab/xlab/commit/a7df043e07a110e0f83fd44815ebe7391a85c745)
+- feat: 支持 timezone 设置 [6d7ac6c](https://github.com/x-9lab/xlab/commit/6d7ac6cc727d4048f62e14a9b9ce820872cca2c3)
+- feat: 去除与基本功能无关的内部组件, 这些组件将以外部组件的形式存在 [01d9068](https://github.com/x-9lab/xlab/commit/01d90688841b383af19197ccfd968c7038bbce9d)
+- feat: 正式去除对老版本中间件声明的支持 [7211fa4](https://github.com/x-9lab/xlab/commit/7211fa49a12dfc5323d27149400c0c5741959c26)
+- feat: 修改版本号，删除无用代码 [9a22319](https://github.com/x-9lab/xlab/commit/9a22319f019388b1f0509af11cf266eafae26791)
+
+### Chore
+- chore: 增加废弃声明，修改log输出方式 [62783c0](https://github.com/x-9lab/xlab/commit/62783c0945205987deecc74f99d071281c0ef39c)
+
 ## v1.4.1
 
 ### Fix
