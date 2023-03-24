@@ -118,6 +118,14 @@ function getMD5(...args: any[]) {
 }
 export { getMD5 }
 
+/**将一个输入字符串转为 md5 */
+function md5(str: string) {
+    var md5 = crypto.createHash("md5");
+    md5.update(str);
+    return md5.digest("hex");
+}
+export { md5 }
+
 /**
  * 对象值转化为数组
  * @param  obj 待转的对象
