@@ -233,6 +233,9 @@ declare global {
 
             /**是否允许静态资源跨域访问 */
             staticCros?: boolean;
+
+            /**时区, 默认是 Asia/Shanghai */
+            timezone?: string;
         }
 
         /**业务错误数据对象 */

@@ -18,6 +18,8 @@ import cluster from "./cluster";
 import loadMiddleware from "./middlewares";
 import badRequest from "./middleware/bad-request";
 
+process.env.TZ = config.timezone;
+
 const logger = globalLog.getLogger("system");
 
 processDotFile(config.env, logger);
@@ -47,9 +49,6 @@ if (config.custom) {
 
 // 加载中间件
 loadMiddleware(app);
-
-// 数据体解析
-// app.use(koaBody());
 
 const koaRouter = new router();
 
