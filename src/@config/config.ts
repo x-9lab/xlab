@@ -12,6 +12,7 @@ const CONFIG: XLab.IConfig = {
     , "middleware": []
     , "strictSSL": false
     , "root": "public"
+    , "timezone": "Asia/Shanghai"
 }
 
 

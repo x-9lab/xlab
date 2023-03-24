@@ -1,5 +1,4 @@
-"use strict";
-
+import { date } from "@x-drive/utils";
 import type Koa from "koa";
 
 const serverPackge = require("../../package.json");
@@ -13,7 +12,7 @@ info.serverVer = serverPackge.version;
 info.serverName = serverPackge.name;
 // 业务启动时间
 // FIX ME : 服务器不是北京时间的时候这个数据跟实际启动的时间存在时差
-info.date = requireMod("common").date("Y-m-d H:i:s", new Date());
+info.date = date(new Date(), "Y-m-d H:i:s");
 
 // 模块版本信息
 const CLIENT_MARK = `${info.mark}@${info.version}`;
