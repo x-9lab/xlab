@@ -1,6 +1,6 @@
 import { random } from "@x-drive/utils";
 import { networkInterfaces } from "os";
-import { md5 } from "../md5";
+import { getMD5 } from "../common";
 
 var netInterfaces = networkInterfaces();
 /**当前机器的 mac */
@@ -23,7 +23,7 @@ function uuid(one: string, tow: string) {
     var r = random(2333333, 23333).toString(16);
     r = r.length < 6 ? r += "0" : r;
     return [
-        md5([one, X_MAC, tow].join("&"))
+        getMD5([one, X_MAC, tow].join("&"))
         , Date.now().toString(16)
         , r
     ].join("-");
