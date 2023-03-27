@@ -3,10 +3,11 @@ import { isArray, isString, isFunction, isAsyncFunction } from "@x-drive/utils";
 import { checkFileStat, getRealDefaultMod } from "./components/common";
 import XConfig from "./default-x-config";
 import { get } from "./config";
+import { inspect } from "util";
 import path from "path";
 
 /**处理自定义业务 */
-function processCustom() {
+async function processCustom() {
     const config = get();
 
     const CustomPath = path.resolve(
@@ -26,27 +27,31 @@ function processCustom() {
     }
 
     if (hasCustom) {
-        config.custom.forEach(async item => {
-            const isStrItem = isString(item);
-            const name = isStrItem ? item : item[0];
-            const conf = isStrItem ? null : item[1];
-            const mod = getRealDefaultMod(
-                require(
-                    path.resolve(
-                        CustomPath
-                        , name
+        try {
+            for (const item of config.custom) {
+                const isStrItem = isString(item);
+                const name = isStrItem ? item : item[0];
+                const conf = isStrItem ? null : item[1];
+                const mod = getRealDefaultMod(
+                    require(
+                        path.resolve(
+                            CustomPath
+                            , name
+                        )
                     )
-                )
-            );
+                );
 
-            if (isFunction(mod)) {
-                mod(conf);
-            } else if (isAsyncFunction(mod)) {
-                await mod(conf);
+                if (isFunction(mod)) {
+                    mod(conf);
+                } else if (isAsyncFunction(mod)) {
+                    await mod(conf);
+                }
+
+                masterLog("custom", `[${name}] loaded`);
             }
-
-            masterLog("custom", `[${name}] loaded`);
-        });
+        } catch (e) {
+            masterLog("custom", "error", inspect(e));
+        }
     }
 
     console.log("");
