@@ -1,4 +1,5 @@
 import { isFunction } from "@x-drive/utils";
+import { inspect } from "util";
 import path from "path";
 import fs from "fs";
 
@@ -30,6 +31,9 @@ const DEF_TIME = config.def * 1000;
  */
 var CRON_TIMERS: Record<string, ReturnType<typeof setTimeout>> = {};
 
+/**任务执行状态, 确保同时只会有一个定时任务在执行 */
+const JOB_STATUS: Record<string, boolean> = {};
+
 /**
  * 定时刷新函数
  * @param mod  模块对象
@@ -38,6 +42,9 @@ var CRON_TIMERS: Record<string, ReturnType<typeof setTimeout>> = {};
  * @return     计时器对象
  */
 function fetch(mod: ICronJob, name: string, dont?: boolean) {
+	if (JOB_STATUS[name] === true) {
+		return;
+	}
 	var time = isFunction(mod.getDelay) ? mod.getDelay() : DEF_TIME;
 
 	if (isNaN(time)) {
@@ -49,9 +56,14 @@ function fetch(mod: ICronJob, name: string, dont?: boolean) {
 	if (!enable) {
 		return null;
 	}
-
 	if (!dont) {
-		mod();
+		JOB_STATUS[name] = true;
+		try {
+			mod();
+		} catch (e) {
+			logger.error(inspect(e));
+		}
+		JOB_STATUS[name] = false;
 	}
 
 	return setTimeout(function () {
@@ -84,7 +96,7 @@ function on(dirPath: string) {
 		dirStat = fs.accessSync(cronPath, fs.constants.F_OK);
 	} catch (e) {
 		dirStat = true;
-		logger.warn(e);
+		logger.warn(inspect(e));
 	}
 
 	// accessSync 在文件不存在的时候才会返回内容
@@ -96,7 +108,7 @@ function on(dirPath: string) {
 	var crons = fs.readdirSync(cronPath);
 	logger.info("Cron online.");
 	try {
-		crons.forEach(function (cron) {
+		for (const cron of crons) {
 			if (cron.charAt(0) !== ".") {
 				var tmpPath = cronPath + "/" + cron;
 				var stats = fs.statSync(tmpPath);
@@ -114,9 +126,9 @@ function on(dirPath: string) {
 					logger.info("\t>>> [ %s ] %s.", name, CRON_TIMERS[name] ? "running" : "disabled");
 				}
 			}
-		});
+		}
 	} catch (err) {
-		logger.error(err);
+		logger.error(inspect(err));
 	}
 	console.log("");
 }
