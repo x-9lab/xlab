@@ -1,3 +1,4 @@
+import { getRealDefaultMod } from "../common";
 import { isFunction } from "@x-drive/utils";
 import { inspect } from "util";
 import path from "path";
@@ -117,8 +118,10 @@ function on(dirPath: string) {
 					var name = cron.replace(".js", "");
 
 					CRON_TIMERS[name] = fetch(
-						require(
-							path.resolve(tmpPath)
+						getRealDefaultMod(
+							require(
+								path.resolve(tmpPath)
+							)
 						)
 						, name
 					);
