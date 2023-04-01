@@ -162,7 +162,7 @@ declare global {
 
             /**
              * 开启的中间件列表
-             * @deprecated since version 1.1.0, 1.3.0 后将完全删除
+             * @deprecated since version 1.1.0, 已弃用, 请使用改用 `middlewares` 配置项
              */
             middleware?: (string | (string | Record<string, any>)[])[];
 
