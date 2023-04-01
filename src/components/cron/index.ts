@@ -126,7 +126,7 @@ function on(dirPath: string) {
 						, name
 					);
 
-					logger.info("\t>>> [ %s ] %s.", name, CRON_TIMERS[name] ? "running" : "disabled");
+					logger.info("[ %s ] %s.", name, CRON_TIMERS[name] ? "running" : "disabled");
 				}
 			}
 		}
