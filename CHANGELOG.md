@@ -1,3 +1,23 @@
+## v1.5.2
+
+### Chore
+- chore: 删除无用的默认配置 [92f6aca](https://github.com/x-9lab/xlab/commit/92f6aca9d61a343da991d986374bf807905177b5)
+- chore: 增加废弃声明，修改log输出方式 [138c52c](https://github.com/x-9lab/xlab/commit/138c52c9f2c493782c783dbe000fab23ea35fa2c)
+
+### Fix
+- fix: 修复定时任务加载出错问题 [a439cfe](https://github.com/x-9lab/xlab/commit/a439cfed0477c7be9ad03014b947867e4a3a2eb7)
+- fix: 修复 custom 加载不能正确提示异常信息的问题 [ec82504](https://github.com/x-9lab/xlab/commit/ec82504ab0c0b834c8e1fa9ded535be42261b6e5)
+- fix: 修复内部 api 目录不存在导致的异常 [c06a5bf](https://github.com/x-9lab/xlab/commit/c06a5bf2bbea8817873553ed001a0cd946e028e6)
+
+### Feat
+- feat: 完善定时任务异常捕获机制, 增加任务执行锁 [ad034c3](https://github.com/x-9lab/xlab/commit/ad034c3b10b8a6bca8e67dc107c8d08e79b7252f)
+- feat: common 增加 md5 方法 [0daa4d5](https://github.com/x-9lab/xlab/commit/0daa4d5fc9d8b76d195c2ca41c0510bd05ec535f)
+- feat: 不再内置 utils/cookie 接口 [7984abb](https://github.com/x-9lab/xlab/commit/7984abb112f07d3aa3b30e73084eeadd1160ba87)
+- feat: 支持 timezone 设置 [08e91e0](https://github.com/x-9lab/xlab/commit/08e91e0c53063bb767a09d5fdec9cf4554bd084d)
+- feat: 去除与基本功能无关的内部组件, 这些组件将以外部组件的形式存在 [79764c0](https://github.com/x-9lab/xlab/commit/79764c011d258d26673a65ae77cfe529199b03a9)
+- feat: 正式去除对老版本中间件声明的支持 [9950f31](https://github.com/x-9lab/xlab/commit/9950f31e0409ea396f45148ad80b6b8800d6c807)
+- feat: 修改版本号，删除无用代码 [9ac65bb](https://github.com/x-9lab/xlab/commit/9ac65bbb62aceedac568962485858e0ac030d3fd)
+
 ## v1.5.0
 
 ### Fix
