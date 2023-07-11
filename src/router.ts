@@ -59,6 +59,25 @@ function walk(dir: string, middlewares: Record<string, string[]>, callback: Walk
     });
 }
 
+type AsyncFunction = (num: number) => Promise<number>;
+
+interface IRouteModSubject {
+    /**业务函数 */
+    handler: Function | AsyncFunction;
+
+    /**业务 api 地址 */
+    api?: string;
+
+    /**API 请求方法 */
+    method?: "get" | "post";
+
+    /**是否忽略 API 名称检测 */
+    ignoreApiNameCheck?: boolean;
+
+    /**接口中间件 */
+    middleware?: Array<Function | AsyncFunction>
+}
+
 /**加载业务服务接口 */
 function appRouter(router: Router) {
     const IS_API_REGEXP = /^\/api\//;
@@ -106,22 +125,25 @@ function appRouter(router: Router) {
             }
 
             // 是对象则取对应的字段
-            if (isObject(mod) && (isFunction(mod.handler) || isAsyncFunction(mod.handler))) {
-                modName = mod.method || "get";
-                api = mod.api || api;
-                apiPart = api.split("/");
-                if (apiPart[0] !== "") {
-                    apiPart.unshift("");
-                }
-                // 保证一定是以 api 开头的
-                if (!IS_API_REGEXP.test(api)) {
-                    api = buildApi(api);
-                }
+            if (isObject(mod)) {
+                const subjectMod: IRouteModSubject = mod;
+                if ((isFunction(subjectMod.handler) || isAsyncFunction(subjectMod.handler))) {
+                    modName = subjectMod.method || "get";
+                    api = subjectMod.api || api;
+                    apiPart = api.split("/");
+                    if (apiPart[0] !== "") {
+                        apiPart.unshift("");
+                    }
+                    // 如果没有声明忽略检测则保证接口一定是以 api 开头的
+                    if (!subjectMod.ignoreApiNameCheck && !IS_API_REGEXP.test(api)) {
+                        api = buildApi(api);
+                    }
 
-                if (isArray(mod.middleware)) {
-                    mod = [api, ...mod.middleware, mod.handler];
-                } else {
-                    mod = [api, mod.handler];
+                    if (isArray(subjectMod.middleware)) {
+                        mod = [api, ...subjectMod.middleware, subjectMod.handler];
+                    } else {
+                        mod = [api, subjectMod.handler];
+                    }
                 }
             }
 
