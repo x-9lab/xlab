@@ -1,5 +1,4 @@
-import { getRealDefaultMod } from "../common";
-import { isFunction } from "@x-drive/utils";
+import { isExecutable, isFunction } from "@x-drive/utils";
 import { inspect } from "util";
 import path from "path";
 import fs from "fs";
@@ -13,6 +12,9 @@ const config = getSysConfig("cron") || {
 interface ICronJob {
 	/**定时任务 */
 	(): void;
+
+	/**定时任务 */
+	default?: () => void;
 
 	/**获取定时任务间隔时间 */
 	getDelay?: () => number;
@@ -60,7 +62,11 @@ function fetch(mod: ICronJob, name: string, dont?: boolean) {
 	if (!dont) {
 		JOB_STATUS[name] = true;
 		try {
-			mod();
+			if (isExecutable(mod)) {
+				mod();
+			} else if (mod.default && isExecutable(mod.default())) {
+				mod.default();
+			}
 		} catch (e) {
 			logger.error(inspect(e));
 		}
@@ -118,10 +124,8 @@ function on(dirPath: string) {
 					var name = cron.replace(".js", "");
 
 					CRON_TIMERS[name] = fetch(
-						getRealDefaultMod(
-							require(
-								path.resolve(tmpPath)
-							)
+						require(
+							path.resolve(tmpPath)
 						)
 						, name
 					);
