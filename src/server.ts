@@ -97,10 +97,10 @@ function boot() {
     cluster();
     process
         .on("uncaughtException", err => {
-            logger.error("uncaughtException:\n", err.stack);
+            logger.error(`uncaughtException:${err.message}\n`, err.stack);
         })
         .on("unhandledRejection", (err: Error) => {
-            logger.error("unhandledRejection:\n", err.stack);
+            logger.error(`unhandledRejection:${err.message}\n`, err.stack);
         });
 }
 
