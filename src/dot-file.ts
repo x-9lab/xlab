@@ -1,4 +1,5 @@
 import { isArray } from "@x-drive/utils";
+import { inspect } from "node:util";
 import path from "path";
 import fs from "fs";
 
@@ -29,7 +30,7 @@ function processDotFile(env: string, logger: any) {
         }
     } catch (e) {
         if (e.code !== "ENOENT") {
-            logger.error(e);
+            logger.error(inspect(e));
         }
     }
 }
