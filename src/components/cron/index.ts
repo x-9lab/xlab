@@ -3,6 +3,30 @@ import { inspect } from "util";
 import path from "path";
 import fs from "fs";
 
+declare global {
+	namespace XLab {
+		/**定时任务配置对象 */
+		interface IConfigCronItem {
+			/**定时任务执行间隔 */
+			delay?: number;
+
+			/**是否启用 */
+			enable?: boolean;
+		}
+
+		interface IConfig {
+			/**
+			 * 定时任务配置
+			 * @see `@components/cron`
+			*/
+			crons?: {
+				/**定时任务配置 */
+				[name: string]: IConfigCronItem;
+			}
+		}
+	}
+}
+
 const logger = log.getLogger("cron");
 const config = getSysConfig("cron") || {
 	"def": 60
