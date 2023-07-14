@@ -1,4 +1,4 @@
-import { isExecutable, isFunction } from "@x-drive/utils";
+import { isExecutable } from "@x-drive/utils";
 import { inspect } from "util";
 import path from "path";
 import fs from "fs";
@@ -72,14 +72,14 @@ function fetch(mod: ICronJob, name: string, dont?: boolean) {
 	if (JOB_STATUS[name] === true) {
 		return;
 	}
-	var time = isFunction(mod.getDelay) ? mod.getDelay() : DEF_TIME;
+	var time = isExecutable(mod.getDelay) ? mod.getDelay() : DEF_TIME;
 
 	if (isNaN(time)) {
 		logger.warn("[ %s ] Time Invalid.", name);
 		time = DEF_TIME;
 	}
 
-	var enable = isFunction(mod.enable) ? mod.enable() === true : true;
+	const enable = isExecutable(mod.enable) ? mod.enable() === true : true;
 	if (!enable) {
 		return null;
 	}
