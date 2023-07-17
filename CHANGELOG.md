@@ -1,3 +1,19 @@
+## v1.5.4
+
+### Feat
+- feat: 定时任务现在默认只会在 master 进程上开启, 如 worker 上也想要执行, 需要将 enableWorkerCron 改为 true [d2032f0](https://github.com/x-9lab/xlab/commit/d2032f05163e638d82f482565ca6d68f2552fca6)
+- feat: 修改定时任务的 getDelay 与 enable 的判断方法 [21c233d](https://github.com/x-9lab/xlab/commit/21c233d14ec6948a2025df8de5eeffefa84901ec)
+- feat: config 支持定时任务配置 [6a33e62](https://github.com/x-9lab/xlab/commit/6a33e6216dad9171362e6ea5ad92ca61756df1f1)
+- feat: uncaughtException 与 unhandledRejection 现在会输出 message [0be80c6](https://github.com/x-9lab/xlab/commit/0be80c63b68bb56e972032bd7a8c5940d6d835bf)
+- feat: 接口声明增加 ignoreApiNameCheck 字段, 支持不已 /api 开始的接口 [c5538f4](https://github.com/x-9lab/xlab/commit/c5538f4b6d2921c387c94a6d208d2eb043c07bf2)
+
+### Fix
+- fix: 修正错误信息没有被正常打印的问题 [0e9b84f](https://github.com/x-9lab/xlab/commit/0e9b84fa09101089cee56fed34e9a70cefdb96ec)
+- fix: 修复定时任务的时间间隔及其他方法不可用的问题 [840d694](https://github.com/x-9lab/xlab/commit/840d694200baf4253f1174b40e979bcfe29a9754)
+
+### Chore
+- chore: 修改提示格式 [cedfcce](https://github.com/x-9lab/xlab/commit/cedfcced6331af7354d1626a65e719b19a02a597)
+
 ## v1.5.2
 
 ### Chore
