@@ -9,6 +9,7 @@ const CONFIG: XLab.IConfig = {
     , "staticHtmlFileMaxage": 0
     , "enableComboCache": true
     , "enableCron": false
+    , "enableWorkerCron": false
     , "strictSSL": false
     , "root": "public"
     , "timezone": "Asia/Shanghai"

@@ -86,10 +86,12 @@ app.use(staticServe(
 app.use(badRequest);
 
 if (config.enableCron) {
-    // 定时任务
-    cron(
-        path.resolve(process.cwd(), XConfig.businessDir, "cron")
-    );
+    if (config.isMaster || config.enableWorkerCron) {
+        // 定时任务
+        cron(
+            path.resolve(process.cwd(), XConfig.businessDir, "cron")
+        );
+    }
 }
 
 /**启动服务 */

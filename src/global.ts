@@ -160,6 +160,9 @@ declare global {
             /**是否开启定时任务 */
             enableCron?: boolean;
 
+            /**是否允许 worker 上也执行定时任务 */
+            enableWorkerCron?: boolean;
+
             /**
              * 开启的中间件列表
              * @deprecated since version 1.1.0, 已弃用, 请使用改用 `middlewares` 配置项
