@@ -39,7 +39,7 @@ async function handle(ctx: Koa.Context, next: Koa.Next) {
                 ctx.body = "";
             } else {
                 setLastModified(nowDateString, ctx);
-                next();
+                await next();
             }
             // 其他的js/css/image静态资源设置两周的缓存时间（可配置）
         } else if (

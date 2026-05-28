@@ -1,5 +1,6 @@
 "use strict";
 import "./global";
+import "./init-env";
 import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
 import { on as cron } from "./components/cron";
@@ -29,9 +30,11 @@ global.masterLog = log;
 
 // 服务实例
 const app = new koa();
+export { app }
 
 /**
  * 获取应用实例对象
+ * @deprecated v1.7.0 后将弃用，请直接从模块中引用
  * @return 实例对象
  */
 global.getApp = function () {

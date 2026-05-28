@@ -1,8 +1,11 @@
 import type { InternalComponents } from "./components";
+// import { globalLog } from "./components/log";
 import XConfig from "./default-x-config";
 import { update, get } from "./config";
 import type Koa from "koa";
 import path from "path";
+
+// const globalLogger = globalLog.getLogger("global")
 
 declare global {
     /**全局日志对象 */
@@ -390,3 +393,5 @@ function setSysConfig(conf: XLab.IConfig) {
 global.setSysConfig = setSysConfig;
 
 global.XLAB = {};
+
+// globalLogger.log("global")
