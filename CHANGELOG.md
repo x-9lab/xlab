@@ -1,3 +1,8 @@
+## v1.6.0
+
+### Feat
+- feat: 支持启动前设置运行环境 [db7766e](https://github.com/x-9lab/xlab/commit/db7766ebfed782f76cbe4983288f121288329787)
+
 ## v1.5.4
 
 ### Feat
