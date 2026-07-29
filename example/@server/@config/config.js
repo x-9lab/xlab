@@ -30,6 +30,7 @@ const CONFIG = {
     "apis": {},
     "indexFileMaxage": 180,
     "custom": [
+        ["lifecycle-demo", { "from": "config" }]
     ],
     "launchRouter": {},
     "root": "static"
