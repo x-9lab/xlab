@@ -13,14 +13,15 @@ Documentation, comments, and commit messages are written in Chinese.
 - `yarn dev` — swc compile `src` → `dist` in watch mode
 - `yarn compile` — one-off swc compile
 - `yarn build` — compile + emit type declarations (`tsc --emitDeclarationOnly` → `@types/`)
+- `yarn test` — run `node --test` suites in `test/` (requires `yarn build` first; tests boot real servers from `example/`)
 - `yarn changelog` — generate CHANGELOG.md (via `@x-drive/changelog`)
-- Run the example app against local build: `yarn build`, then `cd example && yarn && yarn start-dev` (serves on port 3001)
+- Run the example app against local build: `yarn build`, then `cd example && yarn start-dev` (serves on port 3001)
 
-There is no test suite and no linter. `dist/` and `@types/` are gitignored build outputs but are both published to npm (`files` in package.json); the types entry point is `@types/global.d.ts`.
+There is no linter. `dist/` and `@types/` are gitignored build outputs but are both published to npm (`files` in package.json); entry points are `dist/index.js` / `@types/index.d.ts`. `example/node_modules/@x-9lab/xlab` is a `link:` symlink to the repo root so business code and the running server share one module instance.
 
 ## Build pipeline
 
-swc compiles TypeScript to CommonJS (`.swcrc`, targets Node 16); tsc is used only for declaration emit into `@types/`. `tsconfig.json` has `strict: false` and `noImplicitAny: false`. The `-D ./src/bin` flag in the compile scripts copies `src/bin/` (the CLI shim and watch runner, plain JS) into `dist/` untranspiled.
+swc compiles TypeScript to CommonJS (`.swcrc`, targets Node 20; engines `>=20`); tsc is used only for declaration emit into `@types/`. `tsconfig.json` has `strict: false` and `noImplicitAny: false`. `--copy-files` carries the extensionless CLI shim `src/bin/xlab` into `dist/`; `--strip-leading-paths` keeps the `dist/` layout flat.
 
 ## Architecture
 
@@ -28,13 +29,17 @@ swc compiles TypeScript to CommonJS (`.swcrc`, targets Node 16); tsc is used onl
 
 `src/bin/xlab` (Liftoff CLI) → reads consumer's `xlab.config.js` (options: `watch`, `businessDir`) → either `src/bin/watch.js` (auto-restart mode) or `server.boot()` → `src/cluster.ts` forks workers via Node cluster (or listens directly when `workers` is 0) → Koa app.
 
-`src/server.ts` assembles the app in a fixed order — the import order at its top is load-bearing (marked "请勿随意调整位置"): `global.ts` side-effects first, then `init-env`, then config, then custom init, middlewares, router, static serving, bad-request handler, cron. Many modules assume globals exist at require time (e.g. `log`, `getSysConfig`), so reordering imports breaks boot.
+`src/server.ts` `boot()` runs explicit phases in order: `initEnv` (consumer `@env` module) → `loadConfig` → `.xlab` dot-files → custom `setup` hooks → middlewares → router → static serving → bad-request → cron → listen (`cluster.ts`) → custom `ready` hooks. Import order carries no initialization semantics; nothing reads config at require time. `shutdown()` (wired to SIGTERM/SIGINT) stops cron timers, has the master SIGTERM its workers, waits for in-flight requests (`shutdownTimeout`, default 10s), runs `shutdown` hooks, then exits. Worker refork uses backoff: 5 consecutive quick deaths (<10s uptime) stop the auto-restart.
 
-### Globals (`src/global.ts`)
+### Public API (`src/index.ts`)
 
-The framework's API surface for consumers is installed on `global` rather than exported: `log`, `masterLog`, `getApp`, `requireMod` (internal components), `requireModel` / `requireService` (consumer's `business/@models` / `business/@services`), `getSysConfig` / `setSysConfig`, and `XLAB` (populated from `.xlab` dot-files). Type support lives in the global `XLab` namespace; consumers extend `XLab.IModels` / `XLab.IServices` / `XLab.IConfig` via declaration merging. Internal components also augment `XLab.IConfig` this way (see `src/components/cron/index.ts`), so config typing is spread across component files.
+Nothing is installed on `global` (v2 breaking change; see MIGRATION.md). The package entry `src/index.ts` exports: `boot` / `shutdown`, `app` / `getApp`, `getSysConfig` / `setSysConfig`, `requireMod` / `requireModel` / `requireService`, `getLogger` / `masterLog` / `Log` / `globalLog`, `getXlabEnv` (`.xlab` data, ex-`XLAB`), and `defineApi`. Consumer business files import these from `@x-9lab/xlab` — which must resolve to the same module instance as the running server (true for normal installs; `example/` uses a `link:` dep for this).
+
+Type support still lives in the global `XLab` namespace (types only); consumers extend `XLab.IModels` / `XLab.IServices` / `XLab.IConfig` via declaration merging. Internal components also augment `XLab.IConfig` this way (see `src/components/cron/index.ts`), so config typing is spread across component files.
 
 New internal components must be registered in the `InternalComponents` interface in `src/components/index.ts` to be reachable through `requireMod`.
+
+Custom modules (`@server/custom/`, enabled via the `custom` config array) export either a function (treated as `setup`) or a `{ setup, ready, shutdown }` hooks object.
 
 ### Config resolution (`src/config/`)
 
@@ -42,7 +47,7 @@ Environment comes from `ENV=` CLI arg or `NODE_ENV`: development / sandbox / pro
 
 ### Convention routing (`src/router.ts`)
 
-Walks the consumer's `@server/business/` tree and registers each file as a route under `/api/...` derived from its path (filename `index` is dropped). Module export shapes: a function (bound directly as GET), an array (filename becomes the HTTP method), or an object `{ method, api, middleware, handler, ignoreApiNameCheck }`. Special directories: `@`-prefixed (e.g. `@models`) are excluded from routing and used as plain modules; `$`-prefixed hold middleware applied to all routes at that path level and below (not recursive within the `$` dir; files run in filename sort order). Path params use `:name` directory names.
+Two-pass: `collect` walks the consumer's `@server/business/` tree gathering route files and `$`-dir middleware, then every module is normalized to `{ method, api, middlewares, handler }` before registration. Export shapes: a function, or an object `{ method?, api?, middleware?, handler, ignoreApiNameCheck? }` (`defineApi()` is an identity helper for typing). The array export form was removed in v2 — `normalize` throws on it. Filename rules: `index` is dropped from the path; a filename that is an HTTP verb (`get`/`post`/...) is dropped from the path and becomes the route's method. Special directories: `@`-prefixed are excluded from routing and used as plain modules; `$`-prefixed hold middleware applied to all routes at that level and below, including the business root (not recursive within the `$` dir; files run in filename sort order). Path params use `:name` directory names.
 
 ### Middleware (`src/middlewares.ts`)
 
@@ -50,7 +55,7 @@ Enabled and ordered via the `middlewares` config map (`{ name: true | {index, na
 
 ### Cluster and cron
 
-In cluster mode, workers talk to the master via messages dispatched to handlers registered in `src/components/cluster`. Cron jobs (`@server/cron/`, gated by `enableCron`) run only on the master unless `enableWorkerCron` is set; per-job interval/enable comes from the `crons` config keyed by filename, with fallbacks to the job module's own `getDelay()` / `enable()` exports.
+In cluster mode, workers talk to the master via messages dispatched to handlers registered in `src/components/cluster`. Cron jobs (`@server/cron/`, gated by `enableCron`) run only on the master unless `enableWorkerCron` is set; per-job interval/enable comes from the `crons` config keyed by filename (`delay` in seconds), with fallbacks to the job module's own `getDelay()` (ms) / `enable()` exports. The cron component is a `setTimeout` chain, not cron-expression based.
 
 ## Conventions
 
