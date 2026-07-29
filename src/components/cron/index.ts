@@ -61,12 +61,13 @@ function getJobDelay(mod: ICronJob, name: string) {
 	const jobConf = (sysConf.crons || {})[name] || {};
 	const defTime = ((sysConf.cron && sysConf.cron.def) || 60) * 1000;
 
-	if (isNumber(jobConf.delay)) {
+	if (isNumber(jobConf.delay) && jobConf.delay > 0) {
 		return jobConf.delay * 1000;
 	}
 
 	var time = isExecutable(mod.getDelay) ? mod.getDelay() : defTime;
-	if (isNaN(time)) {
+	// 非法或非正数的间隔一律回退默认值, 防止 0 间隔空转
+	if (isNaN(time) || time <= 0) {
 		logger.warn("[ %s ] Time Invalid.", name);
 		time = defTime;
 	}

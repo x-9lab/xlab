@@ -118,7 +118,13 @@ module.exports = {
 4. **`crons` 按任务配置开始生效**:配置项 `crons: { 任务文件名: { delay, enable } }` v1 只有类型声明没有实现,v2 起真实生效,优先级高于任务模块自身的 `getDelay()` / `enable()`。注意 `delay` 单位是**秒**(与 `cron.def` 一致),模块 `getDelay()` 返回值仍是毫秒。
 5. **`middleware` 数组配置移除**:v1.1.0 起已弃用且实际不被读取,配置里如仍保留该字段可直接删除,只认 `middlewares`。
 6. **`custom` 的执行时机**:v1 对 async 自定义模块不等待;v2 会 await 完 `setup` 才继续装配中间件与路由,时序更明确。
-7. **数组路由/根级中间件之外的路由生成规则不变**:`index` 文件名去除、`@` 目录不参与路由、`:name` 路径参数等均与 v1 一致。
+7. **方法名文件的 api 路径会变化(重要)**:v1 中名为 `get.js` / `post.js` 等的函数或对象形态路由文件,文件名会进入 api 路径(如 `business/foo/post.js` → `POST /api/foo/post`);v2 按「文件名即方法」约定,文件名不再进入路径(→ `POST /api/foo`)。**这是路由地址的静默变更**,升级前用下面命令找出此类文件,逐个确认调用方,必要时用 `defineApi` 的 `api` 字段固定回原地址:
+
+    ```bash
+    find @server/business -type f \( -name "get.js" -o -name "post.js" -o -name "put.js" -o -name "delete.js" -o -name "patch.js" -o -name "head.js" -o -name "options.js" -o -name "all.js" \)
+    ```
+
+8. **其余路由生成规则不变**:`index` 文件名去除、`@` 目录不参与路由、`:name` 路径参数等均与 v1 一致。
 
 ### 6. 验证
 

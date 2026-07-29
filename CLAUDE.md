@@ -15,7 +15,7 @@ Documentation, comments, and commit messages are written in Chinese.
 - `yarn build` — compile + emit type declarations (`tsc --emitDeclarationOnly` → `@types/`)
 - `yarn test` — run `node --test` suites in `test/` (requires `yarn build` first; tests boot real servers from `example/`)
 - `yarn changelog` — generate CHANGELOG.md (via `@x-drive/changelog`)
-- Run the example app against local build: `yarn build`, then `cd example && yarn start-dev` (serves on port 3001)
+- Run the example app against local build: `yarn build`, then `cd example && yarn && yarn start-dev` (serves on port 3001)
 
 There is no linter. `dist/` and `@types/` are gitignored build outputs but are both published to npm (`files` in package.json); entry points are `dist/index.js` / `@types/index.d.ts`. `example/node_modules/@x-9lab/xlab` is a `link:` symlink to the repo root so business code and the running server share one module instance.
 

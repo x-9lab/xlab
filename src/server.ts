@@ -204,5 +204,8 @@ export { boot };
 export default app;
 
 if (require.main === module) {
-    boot();
+    boot().catch(function (err) {
+        logger.error("Boot failed:", err);
+        process.exit(1);
+    });
 }
