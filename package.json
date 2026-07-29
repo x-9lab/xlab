@@ -21,25 +21,24 @@
         "@types"
     ],
     "dependencies": {
+        "@x-drive/utils": "1.1.32",
         "koa": "3.2.1",
-        "log4js": "^1.1.1",
-        "liftoff": "5.0.1",
-        "minimist": "1.2.8",
-        "koa-static": "5.0.0",
-        "koa-router": "14.0.0",
         "koa-compress": "5.2.2",
-        "@x-drive/utils": "1.1.32"
+        "koa-router": "14.0.0",
+        "koa-static": "5.0.0",
+        "liftoff": "5.0.1",
+        "log4js": "^6.9.1",
+        "minimist": "1.2.8"
     },
     "devDependencies": {
-        "chokidar": "^3.6.0",
         "@swc/cli": "^0.7.7",
-        "typescript": "^5.9.2",
         "@swc/core": "^1.13.2",
-        "@types/log4js": "2.3.5",
-        "@types/node": "^20.19.0",
-        "@types/koa-static": "4.0.4",
         "@types/koa-router": "7.4.9",
-        "@x-drive/changelog": "1.1.6"
+        "@types/koa-static": "4.0.4",
+        "@types/node": "^20.19.0",
+        "@x-drive/changelog": "1.1.6",
+        "chokidar": "^3.6.0",
+        "typescript": "^5.9.2"
     },
     "bin": {
         "xlab": "dist/bin/xlab"
