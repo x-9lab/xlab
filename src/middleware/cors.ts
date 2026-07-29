@@ -1,4 +1,5 @@
 import { isFunction, isString } from "@x-drive/utils";
+import { get } from "../config";
 import type Koa from "koa";
 
 interface ICorsConfig {
@@ -34,10 +35,16 @@ function getRootName(host: string) {
     return null;
 }
 
-/**系统绑定的域名对应的根域 */
-const ServerHostRootName = getRootName(
-    getSysConfig("host")
-);
+/**系统绑定的域名对应的根域, 首次使用时解析 */
+var serverHostRootName: string | false = false;
+
+/**获取系统绑定域名对应的根域 */
+function getServerHostRootName() {
+    if (serverHostRootName === false) {
+        serverHostRootName = getRootName(get().host || "");
+    }
+    return serverHostRootName;
+}
 
 /**判断是否允许跨域 */
 function isOneOfUs(origin: string, url: string, config: ICorsConfig = {}) {
@@ -51,6 +58,7 @@ function isOneOfUs(origin: string, url: string, config: ICorsConfig = {}) {
         if (config.type === "all") {
             return true;
         } else if (config.type === "sameroot") {
+            const ServerHostRootName = getServerHostRootName();
             if (ServerHostRootName && getRootName(origin) === ServerHostRootName) {
                 return true;
             } else {

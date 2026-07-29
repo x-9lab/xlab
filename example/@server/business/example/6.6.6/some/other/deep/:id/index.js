@@ -1,3 +1,4 @@
+const { requireMod } = require("@x-9lab/xlab");
 const { ErrorTypes } = requireMod("return-code");
 const { responseResult } = requireMod("common");
 

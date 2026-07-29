@@ -1,5 +1,6 @@
 "use strict";
 import { random } from "@x-drive/utils";
+import { get } from "../../config";
 
 var conf: XLab.IConfig;
 const VER_RE = /\d+\.\d+\.\d+/;
@@ -93,6 +94,6 @@ function filter(url: string) {
 export { filter }
 
 export default function () {
-    conf = getSysConfig()
+    conf = get();
     routeMobile = conf.routeMobile;
 };

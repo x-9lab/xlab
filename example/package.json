@@ -11,7 +11,7 @@
     },
     "files": [],
     "dependencies": {
-        "@x-9lab/xlab": "../"
+        "@x-9lab/xlab": "link:../"
     },
     "devDependencies": {
         "cross-env": "7.0.3"

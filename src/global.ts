@@ -1,68 +1,9 @@
 import type { InternalComponents } from "./components";
-// import { globalLog } from "./components/log";
 import XConfig from "./default-x-config";
 import { update, get } from "./config";
-import type Koa from "koa";
 import path from "path";
 
-// const globalLogger = globalLog.getLogger("global")
-
 declare global {
-    /**全局日志对象 */
-    var log: any;
-
-    /**只在 master 上输出的日志 */
-    var masterLog: any;
-
-    /**
-    * 获取应用实例对象
-    */
-    function getApp(): Koa;
-
-    /**
-    * 获取内置组件
-    * @param  name 模块名
-    * @return      模块对象
-    */
-    function requireMod<T extends InternalComponents[K], K extends keyof InternalComponents>(name: K): T;
-
-    /**
-    * 全局获取 model 的方法
-    * @param  name model 名称
-    * @return      model 模块
-    */
-    function requireModel<T extends XLab.IModels[K], K extends keyof XLab.IModels>(name: K): T;
-
-    /**
-    * 全局获取 service 的方法
-    * @param  name service 名称
-    * @return      service 模块
-    */
-    function requireService<T extends XLab.IServices[K], K extends keyof XLab.IServices>(name: K): T;
-
-    /**
-     * 获取系统配置
-     */
-    function getSysConfig(): XLab.IConfig;
-    /**
-     * 获取系统配置
-     * @param  key 配置项
-     */
-    function getSysConfig<T extends XLab.IConfig[K], K extends keyof XLab.IConfig>(key?: K): T;
-    /**
-     * 获取系统配置
-     * @param  key 配置项
-     */
-    function getSysConfig(key?: any): any;
-
-    /**
-    * 更新系统配置
-    * @param  conf 配置项
-    */
-    function setSysConfig(conf: XLab.IConfig): void;
-
-    /**全局注入挂在对象 */
-    var XLAB: Record<string, XLab.JsonValue>;
 
     namespace XLab {
 
@@ -127,6 +68,9 @@ declare global {
             /**服务(应用)名称 */
             name?: string;
 
+            /**服务标识, 默认取 name */
+            mark?: string;
+
             /**版本 */
             version?: string;
 
@@ -166,17 +110,11 @@ declare global {
             /**是否允许 worker 上也执行定时任务 */
             enableWorkerCron?: boolean;
 
-            /**
-             * 开启的中间件列表
-             * @deprecated since version 1.1.0, 已弃用, 请使用改用 `middlewares` 配置项
-             */
-            middleware?: (string | (string | Record<string, any>)[])[];
-
             /**开启的中间件列表 */
             middlewares?: Record<string, boolean | MiddlewareConfig>;
 
             /**自定模块配置 */
-            custom?: string[];
+            custom?: (string | [string, CompositeValue])[];
 
             /**是否启用严格 ssl */
             strictSSL?: boolean;
@@ -290,9 +228,6 @@ declare global {
             UNCHECK_ERROR: ICodeItem;
         }
 
-
-        // type ICodeDetail = Record<string, ICodeItem>;
-
         /**模块配置 */
         interface XConfig {
             /**watch 模式配置 */
@@ -318,7 +253,7 @@ function getModulePath(name: string, root?: string) {
 }
 
 /**
- * 获取 components 模块
+ * 获取内置组件
  * @param  name 模块名
  * @return      模块对象
  */
@@ -327,41 +262,39 @@ function requireMod<T extends InternalComponents[K], K extends keyof InternalCom
         getModulePath(name)
     );
 };
-global.requireMod = requireMod;
+export { requireMod }
 
 /**
- * model 存放路径
- */
-const MODEL_PATH = path.resolve(process.cwd(), XConfig.businessDir, "business", "@models");
-
-/**
- * 全局获取 model 的方法
+ * 获取业务 model (business/@models)
  * @param  name model 名称
  * @return      model 模块
  */
-function requireModel<T = any>(name: string) {
-    return <T>require(
-        path.resolve(MODEL_PATH, name)
+function requireModel<T extends XLab.IModels[K], K extends keyof XLab.IModels>(name: K): T;
+function requireModel(name: string): any;
+function requireModel(name: string) {
+    return require(
+        path.resolve(
+            process.cwd(), XConfig.businessDir, "business", "@models", name
+        )
     );
 };
-global.requireModel = requireModel;
+export { requireModel }
 
 /**
- * services 存放目录
- */
-const SERVICES_PATH = path.resolve(process.cwd(), XConfig.businessDir, "business", "@services");
-
-/**
- * 全局获取 service 的方法
+ * 获取业务 service (business/@services)
  * @param  name service 名称
  * @return      service 模块
  */
-function requireService<T = any>(name: string) {
-    return <T>require(
-        path.resolve(SERVICES_PATH, name)
+function requireService<T extends XLab.IServices[K], K extends keyof XLab.IServices>(name: K): T;
+function requireService(name: string): any;
+function requireService(name: string) {
+    return require(
+        path.resolve(
+            process.cwd(), XConfig.businessDir, "business", "@services", name
+        )
     );
 };
-global.requireService = requireService;
+export { requireService }
 
 /**
  * 获取全部系统配置
@@ -383,8 +316,7 @@ function getSysConfig(key?: any): any {
     }
     return conf;
 };
-
-global.getSysConfig = getSysConfig;
+export { getSysConfig }
 
 /**
  * 更新系统配置
@@ -393,8 +325,4 @@ global.getSysConfig = getSysConfig;
 function setSysConfig(conf: XLab.IConfig) {
     update(conf);
 };
-global.setSysConfig = setSysConfig;
-
-global.XLAB = {};
-
-// globalLogger.log("global")
+export { setSysConfig }

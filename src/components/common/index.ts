@@ -1,5 +1,6 @@
 import { sleep, labelReplace, fix0, numberFormat } from "@x-drive/utils";
 import { getReturnCode } from "../return-code";
+import { globalLog } from "../log";
 import { isObject } from "@x-drive/utils";
 import querystring from "querystring";
 import crypto from "crypto";
@@ -12,7 +13,7 @@ export { labelReplace, fix0, numberFormat, sleep }
 
 function checkLogger() {
     if (!logger) {
-        logger = log.getLogger("common");
+        logger = globalLog.getLogger("common");
     }
     return logger;
 }

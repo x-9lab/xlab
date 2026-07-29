@@ -1,5 +1,6 @@
 import { isArray, isObject, isFunction, isAsyncFunction } from "@x-drive/utils";
 import { checkFileStat, getRealDefaultMod } from "./components/common";
+import { log as masterLog } from "./config";
 import XConfig from "./default-x-config";
 import type Router from "koa-router";
 import path from "path";

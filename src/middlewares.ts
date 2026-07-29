@@ -1,5 +1,6 @@
 import { isArray, isBoolean, isNumber, isString } from "@x-drive/utils";
 import { getRealDefaultMod } from "./components/common";
+import { get, log as masterLog } from "./config";
 import XConfig from "./default-x-config";
 import type koa from "koa";
 
@@ -19,7 +20,7 @@ const INTERNAL_MIDDLEWARE = {
 
 /**获取中间件加载执行列表 */
 function getExeList(): XLab.MiddlewareConfig[] {
-    const config = getSysConfig();
+    const config = get();
     var mConfig: Pick<XLab.IConfig, "middlewares">;
 
     if (config.middlewares) {
