@@ -8,6 +8,7 @@
         "compile": "swc src -D ./src/bin --config-file .swcrc -d dist",
         "build": "yarn compile && yarn gen-declaration",
         "gen-declaration": "tsc --emitDeclarationOnly",
+        "test": "node --test",
         "changelog": "changelog"
     },
     "engines": {
