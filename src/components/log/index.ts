@@ -30,6 +30,26 @@ const DEF_CONFIG: ILogConfig = {
     , "fileLog": false
 };
 
+/**
+ * v1 风格的时间戳格式
+
+ * log4js 6 默认 layout 的时间戳为 ISO 格式(日期与时间之间是 T),
+ * 显式指定 pattern 保持与 v1 一致的空格分隔, 避免影响日志采集
+ */
+const DATE_PATTERN = "yyyy-MM-dd hh:mm:ss.SSS";
+
+/**终端输出默认 layout(按日志等级着色) */
+const STDOUT_LAYOUT = {
+    "type": "pattern"
+    , "pattern": `%[[%d{${DATE_PATTERN}}] [%p] %c -%] %m`
+};
+
+/**文件输出默认 layout */
+const FILE_LAYOUT = {
+    "type": "pattern"
+    , "pattern": `[%d{${DATE_PATTERN}}] [%p] %c - %m`
+};
+
 /**日志模块 */
 class Log {
 
@@ -45,7 +65,7 @@ class Log {
         const appenders: Record<string, log4js.Appender> = {
             "stdout": {
                 "type": "stdout"
-                , ...(this.config.layout ? { "layout": this.config.layout } : {})
+                , "layout": this.config.layout || STDOUT_LAYOUT
             } as log4js.Appender
         };
 
@@ -56,7 +76,7 @@ class Log {
                 , "filename": path.join(this.config.dir, this.config.name)
                 , "pattern": ".yyyyMMddhh.log"
                 , "alwaysIncludePattern": true
-                , ...(this.config.layout ? { "layout": this.config.layout } : {})
+                , "layout": this.config.layout || FILE_LAYOUT
             } as log4js.Appender;
         }
 

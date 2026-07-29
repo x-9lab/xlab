@@ -167,4 +167,4 @@ global.XLAB = xlab.getXlabEnv();
 能,且不再是弃用状态;也可以直接 `const { app } = require("@x-9lab/xlab")`。
 
 **Q: 日志格式变了吗?**
-日志库从 log4js 1.x 升级到 6.x,输出格式基本一致(时间戳分隔符从空格变为 `T`)。如有日志采集的正则匹配,需要确认兼容。
+日志库从 log4js 1.x 升级到 6.x,框架通过默认 layout 保持了 v1 的输出格式(时间戳仍为 `yyyy-MM-dd hh:mm:ss.SSS` 空格分隔),日志采集无需调整;`new Log({ layout })` 自定义 layout 的行为不变。
