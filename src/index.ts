@@ -26,6 +26,10 @@ export { log as masterLog } from "./config";
 // `.xlab` 环境数据
 export { getXlabEnv } from "./dot-file";
 
+// 路由
+export { defineApi } from "./router";
+export type { IApiDefinition } from "./router";
+
 // 类型
 export type { ICustomHooks } from "./custom";
 export type { ICronJob } from "./components/cron";
