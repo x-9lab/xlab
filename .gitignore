@@ -50,3 +50,7 @@ config.lo.js
 # lock file
 package-lock.json
 *.local.json
+
+# npm pack 产物 #
+##################
+*.tgz
