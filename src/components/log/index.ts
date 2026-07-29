@@ -4,113 +4,88 @@ import log4js from "log4js";
 import path from "path";
 import fs from "fs";
 
-/**
- * 按照文件夹目录地址创建文件夹
- * @param  pathStr 文件夹目录地址
- */
-function mkdir(pathStr: string) {
-    var level = pathStr.split(path.sep);
+/**日志配置 */
+interface ILogConfig {
+    /**日志名称,文件日志的文件名 */
+    name?: string;
 
-    if (level) {
-        let dirIndex = 1;
-        let last = level.length;
-        while (dirIndex <= last) {
-            let dirPath = level.slice(0, dirIndex++).join(path.sep);
-            let status;
-            try {
-                status = fs.statSync(dirPath);
-            } catch (e) {
-                if (e.errno === -2) {
-                    status = null;
-                }
-            }
-            if (status) {
-                if (!status.isDirectory()) {
-                    console.error(`Target [${pathStr}] exists and is not a directory.`);
-                    break;
-                }
-            } else if (status === null) {
-                fs.mkdirSync(dirPath);
-            }
+    /**日志输出等级 */
+    level?: string;
+
+    /**文件日志存放目录 */
+    dir?: string;
+
+    /**是否输出文件日志 */
+    fileLog?: boolean;
+
+    /**自定义 layout 配置 */
+    layout?: Record<string, any>;
+}
+
+/**默认配置 */
+const DEF_CONFIG: ILogConfig = {
+    "name": "app"
+    , "level": "warn"
+    , "dir": path.join("private", "log")
+    , "fileLog": false
+};
+
+/**日志模块 */
+class Log {
+
+    /**当前实例配置 */
+    private config: ILogConfig;
+
+    /**日志实例缓存 */
+    private loggers: Record<string, log4js.Logger> = {};
+
+    constructor(config?: ILogConfig) {
+        this.config = Object.assign({}, DEF_CONFIG, config);
+
+        const appenders: Record<string, log4js.Appender> = {
+            "stdout": {
+                "type": "stdout"
+                , ...(this.config.layout ? { "layout": this.config.layout } : {})
+            } as log4js.Appender
+        };
+
+        if (this.config.fileLog) {
+            fs.mkdirSync(this.config.dir, { "recursive": true });
+            appenders.file = {
+                "type": "dateFile"
+                , "filename": path.join(this.config.dir, this.config.name)
+                , "pattern": ".yyyyMMddhh.log"
+                , "alwaysIncludePattern": true
+                , ...(this.config.layout ? { "layout": this.config.layout } : {})
+            } as log4js.Appender;
         }
-        level = null;
-    }
-}
 
-// 日志类型对象
-const LOGERS = {};
-
-function Log(config: Record<string, any>) {
-    this.config = {
-        "name": "app"
-        , "level": "warn"
-        , "dir": "private/log"
-        , "fileLog": false
-        // ,"layout":{
-        //     "type": "pattern"
-        //     ,"pattern": "%r %p %c - %m%n"
-        // }
-    };
-
-    if (Object.prototype.toString.call(config) === "[object Object]") {
-        this.config = Object.assign(this.config, config);
-    }
-    if (this.config.fileLog) {
-        let tmp = path.join(this.config.dir);
-        mkdir(tmp);
-        tmp = null;
-    }
-    log4js.clearAppenders();
-}
-
-var LP = Log.prototype;
-
-/**
- * 获取统计实例
- * @param  {String} cat 实例分类名称
- * @return {Object}     统计实例对象
- */
-LP.getLogger = function (cat) {
-    var conf = this.config;
-    cat = "[" + cat + "]";
-    var logger = LOGERS[cat];
-    if (logger) {
-        return logger;
-    }
-
-    var dateFileConf: Record<string, any> = {
-        "filename": conf.name
-        , "pattern": ".yyyyMMddhh.log"
-        , "alwaysIncludePattern": true
-    };
-    var stdoutConf: Record<string, any> = {};
-    if (conf.layout) {
-        dateFileConf.layout = conf.layout;
-        stdoutConf.layout = conf.layout;
-    }
-
-    if (this.config.fileLog) {
-        log4js.loadAppender("dateFile");
-        log4js.addAppender(
-            log4js.appenderMakers.dateFile(
-                dateFileConf
-                , {
-                    "cwd": conf.dir
+        // log4js 的配置是进程级的,多次实例化以最后一次为准(与 v1 共享 appender 的行为一致)
+        log4js.configure({
+            "appenders": appenders
+            , "categories": {
+                "default": {
+                    "appenders": Object.keys(appenders)
+                    , "level": this.config.level
                 }
-            )
-            , cat
-        );
+            }
+        });
     }
 
-    log4js.addAppender(
-        log4js.appenderMakers.stdout(stdoutConf)
-        , cat
-    );
-
-    logger = log4js.getLogger(cat);
-    logger.setLevel(conf.level);
-    LOGERS[cat] = logger;
-    return logger;
+    /**
+     * 获取分类日志实例
+     * @param  cat 实例分类名称
+     * @return     日志实例对象
+     */
+    getLogger(cat: string) {
+        cat = `[${cat}]`;
+        if (!this.loggers[cat]) {
+            const logger = log4js.getLogger(cat);
+            logger.level = this.config.level;
+            this.loggers[cat] = logger;
+        }
+        return this.loggers[cat];
+    }
 }
 
 export { Log };
@@ -122,6 +97,7 @@ var meta: Record<string, any> = require(
     )
 );
 
+/**框架全局日志实例 */
 const globalLog = new Log({
     "name": meta.name
     , "level": "all"
