@@ -1,121 +1,212 @@
 "use strict";
 import "./global";
-import "./init-env";
 import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
-import { on as cron } from "./components/cron";
+import { on as cronOn, kill as cronKill } from "./components/cron";
 import XConfig from "./default-x-config";
 import { processDotFile } from "./dot-file";
+import loadConfig, { get as getConfig, log } from "./config";
+import { loadCustom, runReady, runShutdown } from "./custom";
+import initEnv from "./init-env";
+import startCluster, { shutdownWorkers } from "./cluster";
+import appRouter from "./router";
+import loadMiddleware from "./middlewares";
+import badRequest from "./middleware/bad-request";
+import { isExecutable } from "@x-drive/utils";
 import staticServe from "koa-static";
-import router from "koa-router";
+import type { Server } from "http";
+import Router from "koa-router";
 import path from "path";
 import koa from "koa";
 
-// 请勿随意调整位置
-import config, { log } from "./config";
-import processCustom from "./custom";
-import appRouter from "./router";
-import cluster from "./cluster";
-import loadMiddleware from "./middlewares";
-import badRequest from "./middleware/bad-request";
-
-process.env.TZ = config.timezone;
-
 const logger = globalLog.getLogger("system");
 
-processDotFile(config.env, logger);
-
-// 只在 master 上输出的日志
-global.masterLog = log;
-
-// 服务实例
+/**服务实例 */
 const app = new koa();
-export { app }
-
-/**
- * 获取应用实例对象
- * @deprecated v1.7.0 后将弃用，请直接从模块中引用
- * @return 实例对象
- */
-global.getApp = function () {
-    return app;
-}
 
 // 不输出X-Powered-By
 // @ts-ignore
 app.poweredBy = false;
 
-if (config.custom) {
-    // 自定义初始化业务
-    processCustom();
+export { app }
+
+/**
+ * 获取应用实例对象
+ * @return 实例对象
+ */
+function getApp() {
+    return app;
+}
+export { getApp }
+
+// 兼容全局挂载(将在移除全局 API 时一并去掉)
+global.getApp = getApp;
+
+/**http 服务实例, master fork 模式下为空 */
+var server: Server = null;
+
+/**是否已启动 */
+var booted = false;
+
+/**是否正在退出 */
+var shuttingDown = false;
+
+/**
+ * 关闭 http 服务, 等待在途请求结束, 超时强制返回
+ * @param timeout 超时时间(毫秒)
+ */
+function closeServer(timeout: number) {
+    return new Promise<void>(function (resolve) {
+        const timer = setTimeout(function () {
+            logger.warn(`等待在途请求结束超时(${timeout}ms), 强制关闭`);
+            resolve();
+        }, timeout);
+        server.close(function () {
+            clearTimeout(timer);
+            resolve();
+        });
+        // 主动断开空闲的 keep-alive 连接, 避免拖住 close 回调
+        if (isExecutable((server as any).closeIdleConnections)) {
+            (server as any).closeIdleConnections();
+        }
+    });
 }
 
-// 加载中间件
-loadMiddleware(app);
+/**
+ * 退出服务
 
-const koaRouter = new router();
-
-// 路由中间件
-app.use(koaRouter.routes());
-
-// 具体路由
-appRouter(koaRouter);
-
-// 静态文件服务
-var staticServeOpts: Options = {};
-if (config.isProd) {
-    staticServeOpts.maxage = config.staticMaxage;
-}
-staticServeOpts.setHeaders = function (res, path) {
-    if (config.isProd && config.staticHtmlFileMaxage && path.endsWith(".html")) {
-        res.setHeader("Cache-Control", `max-age=${config.staticHtmlFileMaxage}`);
+ * 停止定时任务 -> 通知 worker 退出(master) -> 等待在途请求 -> 执行 shutdown 钩子 -> 退出进程
+ * @param code 进程退出码
+ */
+async function shutdown(code = 0) {
+    if (shuttingDown) {
+        return;
     }
-    if (config.staticCros) {
-        const { origin } = res.req.headers;
-        if (origin) {
-            res.setHeader("X-Cros-Static", origin);
-            res.setHeader("Access-Control-Allow-Origin", origin);
-            res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    shuttingDown = true;
+    const config = getConfig();
+    log("system", `Shutting down (pid ${process.pid}) ...`);
+    try {
+        cronKill();
+        if (config.isMaster && config.workers) {
+            await shutdownWorkers(config.shutdownTimeout);
+        }
+        if (server) {
+            await closeServer(config.shutdownTimeout || 10 * 1000);
+        }
+        await runShutdown();
+    } catch (e) {
+        logger.error("Shutdown error:", e);
+    }
+    process.exit(code);
+}
+export { shutdown }
+
+/**
+ * 退出服务
+ * @deprecated 请使用 shutdown
+ */
+function exit() {
+    shutdown();
+}
+export { exit }
+
+/**
+ * 启动服务
+
+ * 按固定顺序执行启动阶段:
+ * initEnv -> loadConfig -> dotFile -> custom(setup) -> middleware
+ * -> router -> static/badRequest -> cron -> listen -> custom(ready)
+ */
+async function boot() {
+    if (booted) {
+        return;
+    }
+    booted = true;
+
+    // 1. 业务环境预处理(@server/@env)
+    initEnv();
+
+    // 2. 配置装载
+    const config = loadConfig();
+    process.env.TZ = config.timezone;
+
+    // 兼容全局挂载(将在移除全局 API 时一并去掉)
+    global.masterLog = log;
+
+    // 3. .xlab 环境数据
+    processDotFile(config.env, logger);
+
+    // 4. 自定义初始化(setup 钩子)
+    if (config.custom) {
+        await loadCustom();
+    }
+
+    // 5. 中间件
+    loadMiddleware(app);
+
+    // 6. 业务路由
+    const koaRouter = new Router();
+    app.use(koaRouter.routes());
+    appRouter(koaRouter);
+
+    // 7. 静态文件服务
+    var staticServeOpts: Options = {};
+    if (config.isProd) {
+        staticServeOpts.maxage = config.staticMaxage;
+    }
+    staticServeOpts.setHeaders = function (res, filePath) {
+        if (config.isProd && config.staticHtmlFileMaxage && filePath.endsWith(".html")) {
+            res.setHeader("Cache-Control", `max-age=${config.staticHtmlFileMaxage}`);
+        }
+        if (config.staticCros) {
+            const { origin } = res.req.headers;
+            if (origin) {
+                res.setHeader("X-Cros-Static", origin);
+                res.setHeader("Access-Control-Allow-Origin", origin);
+                res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+            }
         }
     }
-}
+    app.use(staticServe(
+        path.resolve(process.cwd(), config.root)
+        , staticServeOpts
+    ));
 
-app.use(staticServe(
-    path.resolve(process.cwd(), config.root)
-    , staticServeOpts
-));
+    // 8. 异常状态处理中间件
+    app.use(badRequest);
 
-// 异常状态处理中间件
-app.use(badRequest);
-
-if (config.enableCron) {
-    if (config.isMaster || config.enableWorkerCron) {
-        // 定时任务
-        cron(
-            path.resolve(process.cwd(), XConfig.businessDir, "cron")
-        );
+    // 9. 定时任务
+    if (config.enableCron) {
+        if (config.isMaster || config.enableWorkerCron) {
+            cronOn(
+                path.resolve(process.cwd(), XConfig.businessDir, "cron")
+            );
+        }
     }
-}
 
-/**启动服务 */
-function boot() {
-    cluster();
+    // 10. 监听
+    server = startCluster(app);
+
+    // 11. 进程信号与异常处理
     process
+        .on("SIGTERM", function () {
+            shutdown();
+        })
+        .on("SIGINT", function () {
+            shutdown();
+        })
         .on("uncaughtException", err => {
             logger.error(`uncaughtException:${err.message}\n`, err.stack);
         })
         .on("unhandledRejection", (err: Error) => {
             logger.error(`unhandledRejection:${err.message}\n`, err.stack);
         });
+
+    // 12. ready 钩子
+    await runReady();
 }
 
 export { boot };
-
-/**退出服务 */
-function exit() {
-    process.exit();
-}
-export { exit }
 
 export default app;
 

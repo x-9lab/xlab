@@ -228,6 +228,9 @@ declare global {
                 def?: number;
             }
 
+            /**优雅退出时等待在途请求/worker 结束的超时时间(毫秒), 默认 10000 */
+            shutdownTimeout?: number;
+
             /**注入参数列表 */
             injection?: string[];
 

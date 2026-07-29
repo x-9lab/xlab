@@ -6,23 +6,8 @@ import cluster from "cluster";
 import getEnv from "./getEnv";
 import path from "path";
 
-const argv: Record<string, string> = {};
-process.argv.forEach(function (item) {
-    if (item.indexOf("=") !== -1) {
-        const argPart = item.split("=");
-        argv[argPart[0]] = argPart[1] || undefined;
-    }
-});
-
-const meta = require(
-    path.resolve(
-        process.cwd()
-        , "package.json"
-    )
-);
-
 // 是否正处于 master 进程
-const IS_MASTER = parseInt(process.versions.node) >= 16 ? cluster.isPrimary : cluster.isMaster;
+const IS_MASTER = cluster.isPrimary;
 const logger = globalLog.getLogger("config");
 
 /**
@@ -33,7 +18,7 @@ const LOGERS: Record<string, any> = {
 };
 
 /**
- * 通用日志方法
+ * 通用日志方法, 只在 master 进程上输出
  * @param  cat  业务类型
  * @param  type 日志等级
  */
@@ -65,7 +50,7 @@ function commonLog(cat: string, type: string, ...rest: any[]) {
     logArr = [].slice.call(arguments, setp);
     if (IS_MASTER) {
         if (!LOGERS[cat]) {
-            LOGERS[cat] = log.getLogger(cat);
+            LOGERS[cat] = globalLog.getLogger(cat);
         }
         LOGERS[cat][type].apply(LOGERS[cat], logArr);
     }
@@ -80,55 +65,96 @@ function theLog(...rest: XLab.JsonValue[]) {
         logger.info.apply(logger, rest);
     }
 }
-const { env, envAddConfPath, isProd } = getEnv(argv);
-const conf = defConfigProcessor(argv);
-
-theLog(`A [ ${env} ] server starting.`);
-
-customConfigProcessor(conf, env, envAddConfPath);
 
 /**
- * 默认配置
+ * 系统配置存储对象
+
+ * 模块加载即持有稳定引用, 内容在 loadConfig 执行后可用
  */
-const CONFIG: XLab.IConfig = {
-    "name": meta.name
-    , "version": meta.version
-    , "env": env
-    , "debug": !isProd
-    , "port": 5000
-    , "ip": argv.IP || null
-    , "isProd": isProd
-    , "workers": 3
-    , "allowCache": true
-    , "root": path.resolve(process.cwd(), "public")
-    , "isMaster": IS_MASTER
-};
+const CONFIG: XLab.IConfig = {};
 
-try {
-    extend(CONFIG, conf);
-    if (argv.PORT) {
-        const port = Number(argv.PORT);
-        if (!isNaN(port)) {
-            CONFIG.port = port;
-        }
-    }
-} catch (e) {
-    logger.error("ASSIGN CONFIG ERROR.\n", e);
-}
+/**是否已装载 */
+var loaded = false;
 
+/**配置打印时需要打码的字段 */
 const NOT_SHOW = ["root", "sessionStore", "mongodb"];
 
-Object.keys(CONFIG).forEach(function (key) {
-    var val = JSON.stringify(CONFIG[key]);
-    if (NOT_SHOW.indexOf(key) !== -1 && isProd) {
-        val = "*".repeat(20);
+/**
+ * 装载系统配置
+
+ * 解析命令行参数与环境, 按「内置默认 -> 业务生产配置 -> 环境配置 -> 本地配置 -> 命令行参数」
+ * 顺序合并配置, 重复调用直接返回已装载的配置
+ */
+function loadConfig() {
+    if (loaded) {
+        return CONFIG;
     }
-    theLog(`${key} : ${val}`);
-});
-console.log("");
+    loaded = true;
 
-export default CONFIG;
+    const argv: Record<string, string> = {};
+    process.argv.forEach(function (item) {
+        if (item.indexOf("=") !== -1) {
+            const argPart = item.split("=");
+            argv[argPart[0]] = argPart[1] || undefined;
+        }
+    });
 
+    const meta = require(
+        path.resolve(
+            process.cwd()
+            , "package.json"
+        )
+    );
+
+    const { env, envAddConfPath, isProd } = getEnv(argv);
+    const conf = defConfigProcessor(argv);
+
+    theLog(`A [ ${env} ] server starting.`);
+
+    customConfigProcessor(conf, env, envAddConfPath);
+
+    // 默认配置
+    extend(CONFIG, {
+        "name": meta.name
+        , "version": meta.version
+        , "env": env
+        , "debug": !isProd
+        , "port": 5000
+        , "ip": argv.IP || null
+        , "isProd": isProd
+        , "workers": 3
+        , "allowCache": true
+        , "root": path.resolve(process.cwd(), "public")
+        , "isMaster": IS_MASTER
+    });
+
+    try {
+        extend(CONFIG, conf);
+        if (argv.PORT) {
+            const port = Number(argv.PORT);
+            if (!isNaN(port)) {
+                CONFIG.port = port;
+            }
+        }
+    } catch (e) {
+        logger.error("ASSIGN CONFIG ERROR.\n", e);
+    }
+
+    Object.keys(CONFIG).forEach(function (key) {
+        var val = JSON.stringify(CONFIG[key]);
+        if (NOT_SHOW.indexOf(key) !== -1 && isProd) {
+            val = "*".repeat(20);
+        }
+        theLog(`${key} : ${val}`);
+    });
+    console.log("");
+
+    return CONFIG;
+}
+
+export default loadConfig;
+
+/**获取系统配置对象 */
 function get() {
     return CONFIG;
 }
