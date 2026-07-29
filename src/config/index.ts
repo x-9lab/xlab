@@ -22,7 +22,7 @@ const LOGERS: Record<string, any> = {
  * @param  cat  业务类型
  * @param  type 日志等级
  */
-function commonLog(cat: string, type: string, ...rest: any[]) {
+function commonLog(cat?: string, type?: string, ...rest: any[]) {
     var logArr: any[];
     var setp = 0;
     switch (arguments.length) {

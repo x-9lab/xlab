@@ -103,7 +103,14 @@ const globalLog = new Log({
     , "level": "all"
 });
 
-// 日志
-global.log = globalLog;
-
 export { globalLog }
+
+/**
+ * 获取分类日志实例
+ * @param  cat 实例分类名称
+ * @return     日志实例对象
+ */
+function getLogger(cat: string) {
+    return globalLog.getLogger(cat);
+}
+export { getLogger }

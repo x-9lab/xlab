@@ -1,11 +1,11 @@
 "use strict";
 
 import { lastModified as setLastModified } from "../components/header";
+import { get } from "../config";
 import type Koa from "koa";
 
-const conf = getSysConfig();
-
 async function handle(ctx: Koa.Context, next: Koa.Next) {
+    const conf = get();
     // 头部字段
     var pageUrl = ctx.state.parsedUrl && ctx.state.parsedUrl.pathname || ctx.url;
     var queryMap = ctx.query;

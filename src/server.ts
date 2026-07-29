@@ -1,5 +1,4 @@
 "use strict";
-import "./global";
 import { globalLog } from "./components/log";
 import type { Options } from "koa-static";
 import { on as cronOn, kill as cronKill } from "./components/cron";
@@ -38,9 +37,6 @@ function getApp() {
     return app;
 }
 export { getApp }
-
-// 兼容全局挂载(将在移除全局 API 时一并去掉)
-global.getApp = getApp;
 
 /**http 服务实例, master fork 模式下为空 */
 var server: Server = null;
@@ -129,9 +125,6 @@ async function boot() {
     // 2. 配置装载
     const config = loadConfig();
     process.env.TZ = config.timezone;
-
-    // 兼容全局挂载(将在移除全局 API 时一并去掉)
-    global.masterLog = log;
 
     // 3. .xlab 环境数据
     processDotFile(config.env, logger);
