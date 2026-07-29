@@ -49,3 +49,4 @@ config.lo.js
 
 # lock file
 package-lock.json
+*.local.json
