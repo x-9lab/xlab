@@ -2,7 +2,7 @@ X-9lab 通用服务端
 =======
 
 ## 开发环境配置
-1. 安装 [node](https://nodejs.org/) ,需要 10.0.0 以上版本
+1. 安装 [node](https://nodejs.org/) ,需要 20.0.0 以上版本
 
 ## 使用
 - 将 `@x-9lab/xlab` 加入到依赖中
@@ -56,30 +56,45 @@ X-9lab 通用服务端
             - 按照目录结构生成 api
                 - 文件名是 `index` 的会被从 api 上先强行去掉
                 - 默认都是 `get` 请求
+        - 文件名即方法：文件名是 `get/post/put/delete/patch/head/options/all` 之一时，从 api 路径上去掉并作为该接口的请求方法
         - 支持以下形式定义接口
-            - 模块返回的是数组，则使用文件名做为方法名，并在 api 上去掉文件名
-            - 非数组则文件当作正常的 api 地址
             - 模块返回为函数的则直接绑定为接口处理函数
-            - 返回是对象则取对应的字段
-                - `method` 接口类型，如 `get` 或 `post`
+            - 返回是对象则取对应的字段（推荐配合 `defineApi` 获得类型推导）
+                - `method` 接口类型，如 `get` 或 `post`，不指定时由文件名约定决定
+                - `api` 自定义接口地址
                 - `middleware` 接口中间件
                 - `handler` 接口处理函数
+                - `ignoreApiNameCheck` 是否忽略 `/api` 前缀检测
         - 特殊文件夹
             - 以 `@` 开头的文件夹, 该文件夹不会被当成接口文件夹，但可在正常的接口中作为普通模块使用
             - 以 `$` 开头的文件夹, 该文件夹中的文件会成为后续接口的通用中间件，可以用于某类型业务的统一处理，如后台某些接口的额外身份处理。为了防止滥用，该文件夹不会递归查找，也就是说不支持子文件夹的组织形式。
                 - 整个 api 地址的每个父层都可以有独立的中间件文件，执行顺序会按照目录层级执行
                 - 中间件文件夹内的文件只会按照文件名做简单排序，因此请特别注意执行顺序是否符合自己的预期，或采用带序号的文件名
-    - 自定义逻辑，存放于 `custom` 目录，模块需要导出一个函数作为执行入口
+    - 自定义逻辑，存放于 `custom` 目录，模块导出一个函数作为执行入口（视为 `setup`），或导出 `{ setup, ready, shutdown }` 生命周期钩子对象
+        - `setup` 服务装配前执行，接收 `custom` 配置中声明的参数
+        - `ready` 服务启动完成（listen 成功）后执行
+        - `shutdown` 服务退出前执行，可用于释放连接等资源
     - 中间件，存放于 `middleware` 目录
     - 定时任务，存放于 `cron` 目录
     - 静态资源，默认存放在项目根目录下的 `public` 目录中
-### 全局对象与函数
+### 模块 API
 
-#### 全局对象
-- `log` 全局日志对象
-- `masterLog` 只在 master 上输出的日志对象
+v2 起框架 API 不再挂载到 global，统一从包导入（v1 升级请看 [MIGRATION.md](./MIGRATION.md)）：
 
-#### 全局函数
+```js
+const {
+    boot, shutdown          // 生命周期
+    , app, getApp           // Koa 应用实例
+    , getSysConfig, setSysConfig
+    , requireMod, requireModel, requireService
+    , getLogger, masterLog
+    , getXlabEnv            // .xlab 环境数据
+    , defineApi             // 路由定义帮助函数
+} = require("@x-9lab/xlab");
+```
+
+- `getLogger(cat)` 获取分类日志实例
+- `masterLog(cat, type?, ...msg)` 只在 master 进程上输出的日志方法
 - `getApp` 获取应用实例对象
     ```ts
     /**
@@ -113,7 +128,9 @@ X-9lab 通用服务端
     */
     function setSysConfig(conf: XLab.IConfig): void;
     ```
-- `requireModel` 全局获取 model 的方法
+- `getXlabEnv` 获取 `.xlab` 系列文件定义的环境数据
+- `shutdown` 优雅退出：停止定时任务 → 等待在途请求 → 执行 `shutdown` 钩子 → 退出进程；收到 `SIGTERM` / `SIGINT` 时自动触发
+- `requireModel` 获取 model 的方法
     该方法只是为获取 model 提供一个快捷方式，也可以通过正常的方式去 require
     - 存放路径 `business/@models`
     - 使用方式
@@ -121,7 +138,7 @@ X-9lab 通用服务端
         const { testModel } = requireModel("test");
         ```
     - 类型支持
-        由于 `requireModel` 是一个 `xlab` 的内置方法没有业务本身的 model 定义，因此需要业务方自行追加。出于管理方面的考虑，建议将所有的 model 定义放在一个文件中
+        由于 `requireModel` 是一个 `xlab` 的内置方法没有业务本身的 model 定义，因此需要业务方自行追加（`XLab` 类型命名空间仍为全局，declaration merging 方式与 v1 一致）。出于管理方面的考虑，建议将所有的 model 定义放在一个文件中
         ```ts
         declare global {
             namespace XLab {
@@ -133,7 +150,7 @@ X-9lab 通用服务端
         }
         export { }
         ```
-- `requireService` 全局获取 service 的方法
+- `requireService` 获取 service 的方法
     该方法只是为获取 service 提供一个快捷方式，也可以通过正常的方式去 require
     - 存放路径 `business/@services`
     - 使用方式
@@ -181,10 +198,11 @@ X-9lab 通用服务端
 |staticCros|`boolean`|false|是否允许静态资源跨域访问|
 |enableComboCache|`boolean`|true|是否开启 Combo 缓存|
 |enableCron|`boolean`|false|是否开启定时任务|
-|middleware|`Array<string | (string | Record<string, any>)[]>`|[]|开启的中间件列表。因不方便合并替换，v1.1.0 开始建议使用 `middlewares` 来配置 |
+|enableWorkerCron|`boolean`|false|是否允许 worker 上也执行定时任务|
 |middlewares|`Record<string, MiddlewareConfig>`|{}|开启的中间件列表 |
 ||MiddlewareConfig||`index` 用于定义中间件位置，不提供将使用配置对象中的默认顺序<br/> `name` 中间件名称，不提供将使用配置对象的键名<br/>`config` 中间件配置|
-|custom|`string[]`||自定模块配置|
+|custom|`(string | [string, any])[]`||自定模块配置，元组形式可传入参数|
+|mark|`string`|name 配置|服务标识，用于 service-mark 中间件|
 |strictSSL|`boolean`||是否启用严格 ssl|
 |apis|`Record<string, string>`|{}|页端注入的 api 设置|
 |hasLo|`boolean`||本地是否存在本地开发配置文件|
@@ -197,7 +215,9 @@ X-9lab 通用服务端
 |pathReplaceRegExp|`string`||处理代理过来多余的地址层级路径替换判断正则|
 |routeMobile|`string`||移动端入口文件地址(旧版逻辑)|
 |launchRouter|`Record<string, string>`||不同端入口地址设置, 由 `@x-drive/launch-detect` 提供支持|
-|cron|`{def?: number;}`|{"def": 60}|定时任务设置|
+|cron|`{def?: number;}`|{"def": 60}|定时任务设置，`def` 为默认间隔(秒)|
+|crons|`Record<string, {delay?: number; enable?: boolean;}>`||按任务(文件名)的定时任务配置，`delay` 单位秒，优先级高于任务模块自身的 `getDelay()` / `enable()`|
+|shutdownTimeout|`number`|10000|优雅退出时等待在途请求/worker 结束的超时时间(毫秒)|
 |injection|`string[]`|[]|注入参数列表|
 |indexPageCacheTime|`number`||首页缓存时间|
 |staticResourceCacheTime|`number`||静态资源缓存时间|
