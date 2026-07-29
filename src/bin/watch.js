@@ -1,12 +1,17 @@
 const XConfig = require("../default-x-config").default;
+const { spawn } = require("child_process");
 const { date } = require("@x-drive/utils");
-const crossSpawn = require("cross-spawn");
-const colors = require("colors/safe");
 const path = require("path");
 const fs = require("fs");
 
+/**终端着色,替代对 colors 包的依赖 */
+const colors = {
+    "cyanBold": str => `\x1b[1m\x1b[36m${str}\x1b[0m`
+    , "green": str => `\x1b[32m${str}\x1b[0m`
+};
+
 /**输出内容名称 */
-const X_LAB_STR = colors.bold(colors.cyan("🛸 XLab"));
+const X_LAB_STR = colors.cyanBold("🛸 XLab");
 
 /**
  * 子进程对象
@@ -42,7 +47,7 @@ function stop() {
 
 /**启动 */
 function start() {
-    childProcess = crossSpawn("node", buildSpawnOptions(), { "stdio": "inherit" })
+    childProcess = spawn(process.execPath, buildSpawnOptions(), { "stdio": "inherit" })
         .on("error", err => {
             console.error(err);
         })
