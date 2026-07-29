@@ -9,11 +9,36 @@ const { test, before, after } = require("node:test");
 const { spawn } = require("node:child_process");
 const assert = require("node:assert/strict");
 const path = require("node:path");
+const fs = require("node:fs");
 
 const PORT = 3210;
 const HOST = `http://127.0.0.1:${PORT}`;
 const EXAMPLE_DIR = path.resolve(__dirname, "..", "example");
 const SERVER_ENTRY = path.resolve(__dirname, "..", "dist", "server.js");
+
+/**
+ * config.lo 按约定不提交仓库, 由测试自行创建以验证本地配置合并,
+ * 结束后仅清理由测试创建的文件
+ */
+const LO_CONFIG_PATH = path.resolve(EXAMPLE_DIR, "@server", "@config", "config.lo.js");
+const LO_CONFIG_CONTENT = `"use strict";
+/**@type {XLab.IConfig} */
+module.exports = {
+    "middlewares": {
+        "service-mark": true
+        , "request-filter": true
+        , "fresh-filter": true
+        , "cors": {
+            "config": {
+                "type": "all"
+            }
+        }
+    }
+};
+`;
+
+/**是否由本测试创建了 config.lo */
+var createdLoConfig = false;
 
 /**服务子进程 */
 var server = null;
@@ -33,6 +58,10 @@ async function waitForReady(timeout = 15000) {
 }
 
 before(async () => {
+    if (!fs.existsSync(LO_CONFIG_PATH)) {
+        fs.writeFileSync(LO_CONFIG_PATH, LO_CONFIG_CONTENT);
+        createdLoConfig = true;
+    }
     server = spawn(
         process.execPath
         , [SERVER_ENTRY, `PORT=${PORT}`]
@@ -46,6 +75,9 @@ before(async () => {
 });
 
 after(() => {
+    if (createdLoConfig) {
+        fs.rmSync(LO_CONFIG_PATH, { "force": true });
+    }
     if (server) {
         server.kill("SIGTERM");
         // 兜底强杀,防止残留进程占用端口
