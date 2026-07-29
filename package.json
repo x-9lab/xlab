@@ -18,7 +18,8 @@
     "types": "./@types/index.d.ts",
     "files": [
         "dist",
-        "@types"
+        "@types",
+        "MIGRATION.md"
     ],
     "dependencies": {
         "@x-drive/utils": "1.1.32",
