@@ -1,8 +1,8 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "1.6.1",
+    "version": "2.0.0",
     "description": "9lab 服务端模块",
-    "versionDesc": "日志信息输出优化",
+    "versionDesc": "v2: 移除全局挂载改为模块导出、显式生命周期与优雅退出、路由归一化",
     "scripts": {
         "dev": "swc src --copy-files --strip-leading-paths --config-file .swcrc -d dist -w",
         "compile": "swc src --copy-files --strip-leading-paths --config-file .swcrc -d dist",
