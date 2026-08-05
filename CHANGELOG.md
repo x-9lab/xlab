@@ -1,3 +1,24 @@
+## v2.0.1
+
+### Chore
+- chore(release): 版本号 2.0.1 [ea93bcc](https://github.com/x-9lab/xlab/commit/ea93bccb481bca43825832883ba750da27b01910)
+- chore(release): 版本号 2.0.0 [13a8431](https://github.com/x-9lab/xlab/commit/13a84310040cbfc7b1b350f2e29b88d652fcf2ee)
+
+### Fix
+- fix(watch): 退出信号级联到业务进程, worker 增加孤儿防护 [0c221eb](https://github.com/x-9lab/xlab/commit/0c221eb44085c4ccc00ea7dc8c22f6606024c8f1)
+- fix(middlewares): 移除不存在实现的 combo 白名单项与 enableComboCache 配置 [cc80b87](https://github.com/x-9lab/xlab/commit/cc80b87c6a018a761182db58461d893f340055bf)
+- fix(log): 恢复 v1 的日志时间戳格式 [e422458](https://github.com/x-9lab/xlab/commit/e4224580e8e155cf50c492bbe24ffa5ab5897494)
+- fix(core): review 修正 [e8c6ec2](https://github.com/x-9lab/xlab/commit/e8c6ec289d6125552ceaf921cbbc1df9325084e4)
+- fix(watch): 移除未声明的运行时依赖 [75f4d7c](https://github.com/x-9lab/xlab/commit/75f4d7ca7c75ce1ac683728e1f6132136eab3f89)
+
+### Build
+- build(pack): 发布文件加入 MIGRATION.md [b1fa9c7](https://github.com/x-9lab/xlab/commit/b1fa9c760a595224ef7f73ab70a8dc36ede01659)
+- build(deps): 更新依赖与构建链 [810a3ad](https://github.com/x-9lab/xlab/commit/810a3adbc8688d51bf0760ffe5c797bdffc89c5d)
+
+### Refactor
+- refactor(core): 启动流程显式化并支持优雅退出 [78375d9](https://github.com/x-9lab/xlab/commit/78375d9bb1011c5f6ff4707a6937282dc6f27117)
+- refactor(log): 升级 log4js 6 并重写日志组件 [b51ce4b](https://github.com/x-9lab/xlab/commit/b51ce4b0f3ab43450c130215d7b3feb56cea148c)
+
 ## v2.0.0
 
 ### Fix
