@@ -181,6 +181,13 @@ async function boot() {
     server = startCluster(app);
 
     // 11. 进程信号与异常处理
+    if (!config.isMaster) {
+        // master 异常退出(如被强杀)导致通道断开时, worker 自行优雅退出,
+        // 防止孤儿进程继续占用端口对外服务
+        process.on("disconnect", function () {
+            shutdown();
+        });
+    }
     process
         .on("SIGTERM", function () {
             shutdown();

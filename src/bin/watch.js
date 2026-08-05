@@ -55,8 +55,8 @@ function start() {
             if (Number(code) !== 0) {
                 const err = new Error(`子进程退出, Code: ${code}`);
                 err.code = code;
-                // TODO: 自动拉起来？
                 console.error(err)
+                log("业务进程异常退出, watch 保持运行, 修复代码保存后将自动重启");
             }
         })
         .once("exit", () => {
@@ -147,12 +147,25 @@ function setup(config, wait = 250) {
             }
 
             if (stats > 0) {
-                // 传递主进程 SIGTERM
-                process.on("SIGTERM", () => {
-                    if (childProcess && childProcess.connected) {
-                        childProcess.kill("SIGTERM");
-                    }
-                    process.exit(0);
+                // 传递退出信号: 通知业务进程优雅退出并等待其结束后自身再退出
+                // 注意不能用 childProcess.connected 判断(无 IPC 通道时恒为 false)
+                ["SIGINT", "SIGTERM"].forEach(signal => {
+                    process.on(signal, () => {
+                        if (!childProcess) {
+                            process.exit(0);
+                        }
+                        const child = childProcess;
+                        // 兜底强杀, 时长需覆盖业务的优雅退出(shutdownTimeout 默认 10s)
+                        const timer = setTimeout(() => {
+                            child.kill("SIGKILL");
+                            process.exit(0);
+                        }, 30000);
+                        child.once("exit", () => {
+                            clearTimeout(timer);
+                            process.exit(0);
+                        });
+                        child.kill("SIGTERM");
+                    });
                 });
 
                 watch(chokidar, config, wait);
