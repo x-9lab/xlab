@@ -7,7 +7,6 @@ const CONFIG: XLab.IConfig = {
     , "debug": false
     , "staticMaxage": 1800000
     , "staticHtmlFileMaxage": 0
-    , "enableComboCache": true
     , "enableCron": false
     , "enableWorkerCron": false
     , "strictSSL": false

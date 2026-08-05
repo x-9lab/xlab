@@ -8,8 +8,7 @@ const cwd = process.cwd();
 
 /**内部中间件 */
 const INTERNAL_MIDDLEWARE = {
-    "combo": true
-    , "bad-request": true
+    "bad-request": true
     , "fresh-filter": true
     , "handle-pre-dir": true
     , "request-filter": true

@@ -101,9 +101,6 @@ declare global {
             /**静态 html 文件缓存时间 */
             staticHtmlFileMaxage?: number;
 
-            /**是否开启 Combo 缓存 */
-            enableComboCache?: boolean;
-
             /**是否开启定时任务 */
             enableCron?: boolean;
 
