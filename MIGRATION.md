@@ -68,7 +68,13 @@ grep -rln "requireMod\|requireModel\|requireService\|getSysConfig\|setSysConfig\
 
 ### 3. 数组形式的路由改写(必做,如有)
 
-数组导出(文件名当方法名)已移除,启动时命中会直接报错。改写方式二选一:
+数组导出(文件名当方法名)已移除,启动时命中会直接报错。先用下面的命令排查(**注意同时覆盖 CJS 与 ESM 两种写法**,只搜其中一种会漏):
+
+```bash
+grep -rnE "module\.exports\s*=\s*\[|export default \[" @server/business/
+```
+
+改写方式二选一:
 
 ```js
 // v1: @server/business/user/post.js —— 数组形式
@@ -112,8 +118,8 @@ module.exports = {
 
 以下变化不需要改代码,但需要确认对业务无影响:
 
-1. **优雅退出**:收到 SIGTERM/SIGINT 后,服务会停止定时任务 → 等待在途请求(默认 10s,可用配置项 `shutdownTimeout` 调整,单位毫秒)→ 执行 `shutdown` 钩子 → 退出。**部署侧注意**:k8s 的 `terminationGracePeriodSeconds`、pm2 的 `kill_timeout` 需要大于 `shutdownTimeout`,否则会被强杀。
-2. **worker 崩溃重启退避**:cluster 模式下 worker 10 秒内连续快速崩溃 5 次后不再自动拉起(v1 无条件立即重启,会造成 crash-loop)。依赖「无限重启」兜底的业务需要检查告警。
+1. **优雅退出**:收到 SIGTERM/SIGINT 后,服务会停止定时任务 → 等待在途请求(默认 10s,可用配置项 `shutdownTimeout` 调整,单位毫秒)→ 执行 `shutdown` 钩子 → 退出。**部署侧注意**:k8s 的 `terminationGracePeriodSeconds`、pm2 的 `kill_timeout` 必须大于 `shutdownTimeout`,推荐 **`shutdownTimeout + 5s` 以上**(默认配置下即 ≥ 15s),否则优雅退出会被强杀。
+2. **worker 崩溃重启退避**:cluster 模式下 worker 10 秒内连续快速崩溃 5 次后不再自动拉起(v1 无条件立即重启,会造成 crash-loop)。依赖「无限重启」兜底的业务需要检查告警;退避触发时 master 会输出 error 级日志,可用关键字 **`停止自动拉起`** 接入日志告警。
 3. **business 根级 `$` 中间件开始生效**:v1 因 bug 从不生效,v2 按文档约定对全部业务路由生效。如果 business 根下有 `$` 目录,确认其中间件对所有接口执行是否符合预期。
 4. **`crons` 按任务配置开始生效**:配置项 `crons: { 任务文件名: { delay, enable } }` v1 只有类型声明没有实现,v2 起真实生效,优先级高于任务模块自身的 `getDelay()` / `enable()`。注意 `delay` 单位是**秒**(与 `cron.def` 一致),模块 `getDelay()` 返回值仍是毫秒。
 5. **`middleware` 数组配置移除**:v1.1.0 起已弃用且实际不被读取,配置里如仍保留该字段可直接删除,只认 `middlewares`。同时移除 `enableComboCache` 配置与内置中间件白名单里的 `combo` 项——combo 中间件实现早已不存在,v1 中启用它会直接启动崩溃。
@@ -150,6 +156,12 @@ import {
 ```
 
 ## 常见问题
+
+**Q: 共享库(被多个业务引用的包)怎么迁移?**
+v2 的 `requireMod` / `getLogger` 等 API 不依赖框架 boot 状态,`require("@x-9lab/xlab")` 后即可独立使用。因此共享库可以先行直迁 v2 显式导入,在 v1/v2 混装的过渡期也能安全加载。注意 `getSysConfig` / `getXlabEnv` 的**数据**在 boot 后才填充,共享库应在调用时读取,不要在模块加载时缓存取值。
+
+**Q: monorepo 混装期(部分包 v1、部分包 v2)有什么已知现象?**
+根 node_modules 的提升版本会随多数派翻转;v1/v2 全局类型声明并存时,tsc 可能报 node_modules 内的重复标识符,属预期噪音,全部迁移完成后消失。
 
 **Q: 迁移时想先跑起来再逐步改,有没有临时兼容方案?**
 可以在业务自己的 `@server/@env/index.js`(启动最早执行)里临时把 API 挂回 global,迁移完成后删除:

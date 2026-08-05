@@ -115,6 +115,7 @@ const {
 
 - `getLogger(cat)` 获取分类日志实例
 - `masterLog(cat, type?, ...msg)` 只在 master 进程上输出的日志方法
+- `requireMod` / `getLogger` 等不依赖服务启动状态，共享库可独立引用；`getSysConfig` / `getXlabEnv` 的数据在启动后才填充，应在调用时读取
 - `getApp` 获取应用实例对象
     ```ts
     /**
