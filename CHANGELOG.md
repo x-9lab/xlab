@@ -1,3 +1,23 @@
+## v2.0.0
+
+### Fix
+- fix(log): 恢复 v1 的日志时间戳格式 [bacd24c](https://github.com/x-9lab/xlab/commit/bacd24c5934d6642ddd362855c48bbff16661da5)
+- fix(core): review 修正 [82105d2](https://github.com/x-9lab/xlab/commit/82105d201134a9814af00864f395f2f4b8eefbeb)
+- fix(watch): 移除未声明的运行时依赖 [7ed4eb4](https://github.com/x-9lab/xlab/commit/7ed4eb44c3503fed206b2a5b93506984899b29db)
+
+### Build
+- build(pack): 发布文件加入 MIGRATION.md [5b9a328](https://github.com/x-9lab/xlab/commit/5b9a32882f43f6421b0abf58e04df5018cf542e4)
+- build(deps): 更新依赖与构建链 [8af51e6](https://github.com/x-9lab/xlab/commit/8af51e6a18648af1af67136873ce1f0fcf5ca877)
+- build: 增加 AI 相关支持 [b9d5ba5](https://github.com/x-9lab/xlab/commit/b9d5ba5b693ad4104595f6600b5e7cee3bfdd4e1)
+
+### Chore
+- chore(release): 版本号 2.0.0 [2b00bcb](https://github.com/x-9lab/xlab/commit/2b00bcbad509cded808ecd79f30d0cc33763f725)
+- chore: fix [592b4bb](https://github.com/x-9lab/xlab/commit/592b4bbeafce5c8cce1eb1440f4e2d5ca932800e)
+
+### Refactor
+- refactor(core): 启动流程显式化并支持优雅退出 [45d3c2f](https://github.com/x-9lab/xlab/commit/45d3c2ff7094c0fd9b4b6c1c095cb363a3e5739f)
+- refactor(log): 升级 log4js 6 并重写日志组件 [58419ff](https://github.com/x-9lab/xlab/commit/58419ff13fa579ac47bbdeadec567ab09aa538d5)
+
 ## v1.6.0
 
 ### Feat
