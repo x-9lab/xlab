@@ -1,3 +1,9 @@
+## v2.0.2
+
+### Feat
+- feat: 修改 service-mark 中的分割符 [d05231c](https://github.com/x-9lab/xlab/commit/d05231cb04f03ad5ac4a22b8c342a0bf9f4f3bb1)
+- feat: service-mark 现在会用简单的 base64 字符串加密 [96f4fea](https://github.com/x-9lab/xlab/commit/96f4feaa6acaa78e81795744945b2e4f8a674a52)
+
 ## v2.0.1
 
 ### Chore
