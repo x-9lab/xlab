@@ -1,6 +1,6 @@
 {
     "name": "@x-9lab/xlab",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "9lab 服务端模块",
     "versionDesc": "watch 退出信号级联与 worker 孤儿防护;移除 combo 中间件残留",
     "scripts": {

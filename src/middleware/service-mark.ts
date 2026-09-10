@@ -1,3 +1,4 @@
+import { asciiTobase64 } from "../components/common";
 import { date } from "@x-drive/utils";
 import { get } from "../config";
 import type Koa from "koa";
@@ -12,7 +13,7 @@ export default function () {
     const SERVER_MARK = `${serverPackge.name}@${serverPackge.version}`;
     // 业务启动时间
     // FIX ME : 服务器不是北京时间的时候这个数据跟实际启动的时间存在时差
-    const MARK = `${CLIENT_MARK},${SERVER_MARK};Startup@${date(new Date(), "Y-m-d H:i:s")}`;
+    const MARK = asciiTobase64(`${CLIENT_MARK},${SERVER_MARK};Startup@${date(new Date(), "Y-m-d H:i:s")}`);
 
     /**
      * 处理函数
